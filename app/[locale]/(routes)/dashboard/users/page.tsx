@@ -1,8 +1,8 @@
 import { IoMdPersonAdd } from "react-icons/io";
-
-import Link from "next/link";
 import { UserStatsResult } from "@/app/types/user";
 import { adminGetUsers, adminGetUsersStats } from "@/app/actions/userActions";
+
+import Link from "next/link";
 import UserStats from "@/app/components/dashboard/UsersPage/UserStats";
 import ClientUsers from "@/app/components/dashboard/UsersPage/ClientUsers";
 
@@ -38,7 +38,7 @@ export default async function UsersPage() {
             </p>
           </div>
           <Link
-            href="/dashboard/users/add"
+            href="/dashboard/adduser"
             className="bg-linear-to-br from-orange-500 to-amber-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:shadow-lg hover:shadow-orange-500/20 transition-all active:scale-95"
           >
             <IoMdPersonAdd className="size-6" />
@@ -56,7 +56,6 @@ export default async function UsersPage() {
           page={usersResponse.page}
           perPage={usersResponse.perPage}
           lastPage={usersResponse.lastPage}
-          pendingUsers={stats.unverifiedUsersNumber}
         />
       </main>
     </>

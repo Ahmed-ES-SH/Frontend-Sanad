@@ -2,17 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AvatarUpload from "./AvatarUpload";
 import { adminCreateUser } from "@/app/actions/userActions";
 import { UserFormData, UserRole } from "@/app/types/user";
 import { toast } from "sonner";
+import AddUserForm from "./AddUserForm";
 
 // ============================================================================
 // ADD USER CLIENT - Admin form for creating new users
 // Validates input and submits to server action for backend creation
 // ============================================================================
 
-type FormState = "idle" | "submitting" | "success";
+export type FormState = "idle" | "submitting" | "success";
 
 const rolePermissions: Record<UserRole, { title: string; items: string[] }> = {
   user: {
@@ -36,7 +36,7 @@ const rolePermissions: Record<UserRole, { title: string; items: string[] }> = {
 
 const FORM_KEY = "add-user-draft";
 
-interface DraftFormData {
+export interface DraftFormData {
   name: string;
   email: string;
   password: string;
@@ -71,6 +71,7 @@ export default function AddUserClient() {
       const saved = localStorage.getItem(FORM_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as Partial<DraftFormData>;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setForm((prev) => ({ ...prev, ...parsed }));
       }
     } catch {
@@ -201,12 +202,19 @@ export default function AddUserClient() {
   const permissions = rolePermissions[form.role];
 
   return (
-    <div dir={isRTL ? "rtl" : "ltr"}>
+    <div
+      className={` ${formState === "success" ? "flex items-center justify-center min-h-[80dvh]" : ""}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-stone-900">Add New User</h1>
-        <p className="text-stone-500 mt-1">Add a new user to Sanad.</p>
-      </div>
+      {formState !== "success" && (
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-stone-900">
+            Add New User
+          </h1>
+          <p className="text-stone-500 mt-1">Add a new user to Sanad.</p>
+        </div>
+      )}
 
       {formState === "success" ? (
         /* Success State */
@@ -235,272 +243,17 @@ export default function AddUserClient() {
         </div>
       ) : null}
 
-      <form
-        onSubmit={handleSubmit}
-        className={formState === "success" ? "mt-8" : ""}
-      >
-        <div className="grid grid-cols-12 gap-8">
-          {/* Main Form Column */}
-          <div className="col-span-12 lg:col-span-8 space-y-6">
-            {/* Basic Information */}
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-stone-200">
-              <h2 className="text-base font-semibold text-stone-900 mb-6">
-                Basic Information
-              </h2>
-              <div className="space-y-6">
-                <AvatarUpload
-                  onAvatarChange={(url) => setForm({ ...form, avatar: url })}
-                />
-                <div className="space-y-5">
-                  {/* Email — required, first */}
-                  <div className="space-y-1.5">
-                    <label className="block text-sm font-medium text-stone-700">
-                      Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      value={form.email}
-                      onChange={handleChange("email")}
-                      autoComplete="email"
-                      className={`w-full bg-stone-50 border border-stone-200 rounded-md px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none ${
-                        errors.email ? "border-red-400" : ""
-                      }`}
-                      placeholder="you@example.com"
-                    />
-                    {errors.email && (
-                      <p className="text-xs text-red-500">{errors.email}</p>
-                    )}
-                  </div>
-
-                  {/* Name — optional, second */}
-                  <div className="space-y-1.5">
-                    <label className="block text-sm font-medium text-stone-700">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      value={form.name}
-                      onChange={handleChange("name")}
-                      autoComplete="name"
-                      className="w-full bg-stone-50 border border-stone-200 rounded-md px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
-                      placeholder="e.g. Sultan Al-Rashid"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Security & Access */}
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-stone-200">
-              <h2 className="text-base font-semibold text-stone-900 mb-6">
-                Credentials &amp; Role
-              </h2>
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="space-y-1.5">
-                    <label className="block text-sm font-medium text-stone-700">
-                      Password <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="password"
-                      value={form.password}
-                      onChange={handleChange("password")}
-                      autoComplete="new-password"
-                      className={`w-full bg-stone-50 border border-stone-200 rounded-md px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none ${
-                        errors.password ? "border-red-400" : ""
-                      }`}
-                      placeholder="At least 8 characters"
-                    />
-                    {errors.password && (
-                      <p className="text-xs text-red-500">{errors.password}</p>
-                    )}
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="block text-sm font-medium text-stone-700">
-                      Confirm Password <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="password"
-                      value={form.confirmPassword}
-                      onChange={handleChange("confirmPassword")}
-                      autoComplete="new-password"
-                      className={`w-full bg-stone-50 border border-stone-200 rounded-md px-4 py-2.5 text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none ${
-                        errors.confirmPassword ? "border-red-400" : ""
-                      }`}
-                      placeholder="Re-enter password"
-                    />
-                    {errors.confirmPassword && (
-                      <p className="text-xs text-red-500">
-                        {errors.confirmPassword}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Role Assignment */}
-                <div className="space-y-3">
-                  <label className="block text-sm font-medium text-stone-700">
-                    Role
-                  </label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label className="relative cursor-pointer">
-                      <input
-                        type="radio"
-                        name="role"
-                        className="peer sr-only"
-                        checked={form.role === "user"}
-                        onChange={() => handleRoleChange("user")}
-                      />
-                      <div className="p-4 rounded-xl border-2 border-stone-200 bg-stone-50 peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-stone-100 peer-checked:bg-orange-100 flex items-center justify-center">
-                            <svg
-                              className="w-5 h-5 text-stone-500"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={1.5}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                              />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold">
-                              Standard User
-                            </p>
-                            <p className="text-xs text-stone-500">
-                              Limited dashboard access
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </label>
-
-                    <label className="relative cursor-pointer">
-                      <input
-                        type="radio"
-                        name="role"
-                        className="peer sr-only"
-                        checked={form.role === "admin"}
-                        onChange={() => handleRoleChange("admin")}
-                      />
-                      <div className="p-4 rounded-xl border-2 border-stone-200 bg-stone-50 peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-stone-100 peer-checked:bg-orange-100 flex items-center justify-center">
-                            <svg
-                              className="w-5 h-5 text-stone-500"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={1.5}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
-                              />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold">
-                              Administrator
-                            </p>
-                            <p className="text-xs text-stone-500">
-                              Full system capabilities
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="col-span-12 lg:col-span-4 space-y-6">
-            {/* Role Permissions Summary */}
-            <div className="bg-white rounded-xl p-6 border border-stone-200/50">
-              <h4 className="text-sm font-semibold text-stone-900 mb-3">
-                {permissions.title}
-              </h4>
-              <ul className="space-y-2">
-                {permissions.items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2 text-sm text-stone-600"
-                  >
-                    <svg
-                      className="w-4 h-4 mt-0.5 text-orange-500 shrink-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Actions */}
-        <div className="mt-10 pt-6 border-t border-stone-200 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={handleDiscard}
-            className="px-6 py-2.5 text-stone-500 text-sm font-medium hover:text-stone-800 transition-colors"
-          >
-            Cancel
-          </button>
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={formState === "submitting"}
-              className="px-10 py-2.5 bg-orange-600 text-white text-sm font-medium rounded-md hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-            >
-              {formState === "submitting" ? (
-                <span className="flex items-center gap-2">
-                  <svg
-                    className="animate-spin w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Creating...
-                </span>
-              ) : (
-                "Create User"
-              )}
-            </button>
-          </div>
-        </div>
-      </form>
+      <AddUserForm
+        formState={formState}
+        handleSubmit={handleSubmit}
+        errors={errors}
+        form={form}
+        handleChange={handleChange}
+        handleRoleChange={handleRoleChange}
+        permissions={permissions}
+        handleDiscard={handleDiscard}
+        setForm={setForm}
+      />
     </div>
   );
 }

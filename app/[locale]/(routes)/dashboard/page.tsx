@@ -7,7 +7,7 @@ import ServicePerformance from "@/app/components/dashboard/DashboardPage/Service
 export default function DashboardPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      <main className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 bg-stone-50">
+      <main className="flex-1 overflow-y-auto p-2 md:p-6 lg:p-8 space-y-6 bg-stone-50">
         <HeroWelcome />
         <KeyMetrics />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

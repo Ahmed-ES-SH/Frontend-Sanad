@@ -135,9 +135,8 @@ export function CartPage() {
   const onSuccess = useCallback(() => {
     toast.success(t.paymentSuccess);
     setIsPaymentModalOpen(false);
-    router.push(`/${locale}/userdashboard/payments/success`);
     void clear();
-  }, [clear, locale, router, t.paymentSuccess]);
+  }, [clear, t.paymentSuccess]);
 
   const onError = useCallback(
     (error: string) => {

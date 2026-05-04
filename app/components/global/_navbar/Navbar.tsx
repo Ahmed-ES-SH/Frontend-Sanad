@@ -1,6 +1,5 @@
 import NotificationBell from "../../website/notifications/NotificationBell";
 import { getCurrentUserAction } from "@/app/actions/authActions";
-import Img from "../Img";
 import LocaleLink from "../LocaleLink";
 import CartButton from "./CartButton";
 import ClientDiv from "./ClientDiv";
@@ -42,7 +41,7 @@ export default async function Navbar() {
         </nav>
 
         {/* Right: Actions */}
-        <div className="flex items-center justify-end gap-1 md:gap-4">
+        <div className="flex items-center justify-end md:gap-2 gap-1">
           {/* notification bell */}
           <NotificationBell />
 

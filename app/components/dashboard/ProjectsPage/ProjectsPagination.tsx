@@ -1,7 +1,10 @@
 "use client";
 
 import { PaginationMeta } from "@/app/types/global";
-import { PAGINATION_VISIBLE_PAGES, PAGINATION_BUTTONS } from "@/app/constants/projects";
+import {
+  PAGINATION_VISIBLE_PAGES,
+  PAGINATION_BUTTONS,
+} from "@/app/constants/projects";
 
 interface ProjectsPaginationProps {
   meta: PaginationMeta;
@@ -30,8 +33,8 @@ export default function ProjectsPagination({
 
   const getPageNumbers = (): (number | null)[] => {
     const pages: (number | null)[] = [];
-    const totalPages = meta.total;
-    
+    const totalPages = meta.lastPage;
+
     if (totalPages <= PAGINATION_VISIBLE_PAGES) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -39,26 +42,28 @@ export default function ProjectsPagination({
     } else {
       let startPage = Math.max(1, currentPage - 2);
       let endPage = Math.min(totalPages, currentPage + 2);
-      
+
       if (currentPage <= 2) {
         endPage = PAGINATION_VISIBLE_PAGES;
       } else if (currentPage >= totalPages - 1) {
         startPage = totalPages - PAGINATION_VISIBLE_PAGES + 1;
       }
-      
+
       for (let i = startPage; i <= endPage; i++) {
         pages.push(i);
       }
     }
-    
+
     return pages;
   };
 
   return (
     <div className="border-t border-[var(--surface-card-border)] bg-[var(--surface-50)] py-4 px-6 flex items-center justify-between">
       <p className="font-inter text-sm text-stone-500">
-        Showing <span className="font-medium text-stone-900">{meta.page}</span> of{" "}
-        <span className="font-medium text-stone-900">{meta.total}</span> results
+        Showing{" "}
+        <span className="font-medium text-stone-900">{meta.limit ?? 20}</span>{" "}
+        of <span className="font-medium text-stone-900">{meta.total}</span>{" "}
+        results
       </p>
       <div className="flex items-center gap-2">
         <button

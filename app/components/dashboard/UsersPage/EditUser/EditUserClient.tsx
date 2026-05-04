@@ -14,6 +14,7 @@ import UserInfoSidebar from "./UserInfoSidebar";
 import DangerZoneCard from "./DangerZoneCard";
 import AvatarModal from "./AvatarModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import { BiLoader } from "react-icons/bi";
 
 interface EditUserClientProps {
   user: User;
@@ -59,14 +60,14 @@ export default function EditUserClient({ user, locale }: EditUserClientProps) {
   };
 
   return (
-    <div>
+    <div className="overflow-hidden w-full h-full">
       {/* Page Header */}
       <EditUserHeader locale={locale} />
 
       <form onSubmit={handleUpdate}>
         <div className="grid grid-cols-12 gap-8">
           {/* Main Form Column */}
-          <div className="col-span-12 lg:col-span-8 space-y-6">
+          <div className="col-span-12 xl:col-span-8 space-y-6">
             <BasicInfoCard
               user={user}
               formData={formData}
@@ -84,56 +85,38 @@ export default function EditUserClient({ user, locale }: EditUserClientProps) {
           </div>
 
           {/* Sidebar */}
-          <div className="col-span-12 lg:col-span-4 space-y-6">
+          <div className="col-span-12 xl:col-span-4 space-y-6 ">
             <UserInfoSidebar user={user} locale={locale} />
             <DangerZoneCard
               locale={locale}
               onDeleteClick={() => setShowDeleteConfirm(true)}
             />
-          </div>
-        </div>
 
-        {/* Footer Actions */}
-        <div className="mt-10 pt-6 border-t border-stone-200 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => window.history.back()}
-            className="px-6 py-2.5 text-stone-500 text-sm font-medium hover:text-stone-800 transition-colors"
-          >
-            {translations.actions.cancel}
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-10 py-2.5 bg-orange-600 text-white text-sm font-medium rounded-md hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-          >
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                <svg
-                  className="animate-spin w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                {translations.actions.saving}
-              </span>
-            ) : (
-              translations.actions.save
-            )}
-          </button>
+            {/* Footer Actions */}
+            <div className="mt-10 py-3 w-full  border-t border-stone-200 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => window.history.back()}
+                className="px-6 py-2.5 text-stone-500 text-sm font-medium hover:text-stone-800 transition-colors"
+              >
+                {translations.actions.cancel}
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-10 py-2.5 bg-orange-600 text-white text-sm font-medium rounded-md hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <BiLoader className="animate-spin w-4 h-4" />
+                    {translations.actions.saving}
+                  </span>
+                ) : (
+                  translations.actions.save
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </form>
 

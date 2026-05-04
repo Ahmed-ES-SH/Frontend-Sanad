@@ -2,12 +2,12 @@
 
 import { FiSearch, FiMenu } from "react-icons/fi";
 import { usePathname } from "next/navigation";
-import DropdownNotifications from "./DropdownNotifications";
 import DropdownSettings from "./DropdownSettings";
 import useVariablesStore from "@/app/store/VariablesSlice";
 import { useTranslation } from "@/app/hooks/useTranslation";
 import LocaleLink from "../../global/LocaleLink";
 import UserButton from "../../global/_navbar/UserButton";
+import NotificationBell from "../../website/notifications/NotificationBell";
 
 const routeLabels: Record<string, string> = {
   dashboard: "Overview",
@@ -67,7 +67,7 @@ export default function TopNavBar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsSidebarOpen(true)}
-          className="md:hidden p-2 rounded-xl hover:bg-stone-100 transition-colors text-stone-600 border border-stone-200/50 shadow-sm"
+          className="lg:hidden p-2 rounded-xl hover:bg-stone-100 transition-colors text-stone-600 border border-stone-200/50 shadow-sm"
           aria-label="Open Sidebar"
         >
           <FiMenu size={20} />
@@ -122,7 +122,7 @@ export default function TopNavBar() {
         {/* Actions */}
         <div className="flex items-center gap-1.5 sm:gap-3">
           <div className="flex items-center gap-1 sm:gap-2 mr-1 sm:mr-3 border-r border-stone-200/60 pr-1 sm:pr-3">
-            <DropdownNotifications />
+            <NotificationBell />
             <DropdownSettings />
           </div>
 

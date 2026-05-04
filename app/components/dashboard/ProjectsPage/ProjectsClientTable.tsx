@@ -73,7 +73,7 @@ export default function ProjectsClientTable({
       />
 
       {/* Show pagination when projects exist */}
-      {projects.length > 0 && meta.total > 0 && (
+      {projects.length > 0 && meta.lastPage > 1 && (
         <div className="surface-card rounded-xl shadow-surface-md border border-[var(--surface-card-border)] overflow-hidden bg-white">
           <ProjectsPagination
             meta={meta}

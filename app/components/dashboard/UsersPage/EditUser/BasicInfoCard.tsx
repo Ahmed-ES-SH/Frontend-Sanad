@@ -9,7 +9,9 @@ interface BasicInfoCardProps {
   user: User;
   formData: UserUpdateFormData;
   locale: Locale;
-  onChange: (field: keyof UserUpdateFormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onChange: (
+    field: keyof UserUpdateFormData,
+  ) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   onAvatarClick: () => void;
 }
 
@@ -77,6 +79,8 @@ export default function BasicInfoCard({
               <Image
                 src={formData.avatar}
                 alt={user.name || "User avatar"}
+                width={80}
+                height={80}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -125,7 +129,9 @@ export default function BasicInfoCard({
               </svg>
             </div>
           </button>
-          <p className="text-xs text-stone-500">{translations.form.avatarHint}</p>
+          <p className="text-xs text-stone-500">
+            {translations.form.avatarHint}
+          </p>
         </div>
 
         {/* Email Verification Toggle */}

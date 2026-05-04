@@ -41,7 +41,7 @@ export default function Sidebar() {
     useVariablesStore();
   const { logout, isLoading } = useAuthStore();
   const isRTL = locale === "ar";
-  const isMobile = width < 768;
+  const isMobile = width < 1024;
 
   const pathname = usePathname();
   const t = useTranslation("DashboardPage.Sidebar");
@@ -60,37 +60,35 @@ export default function Sidebar() {
   const asideContent = (
     <>
       {/* Brand Section */}
-      <LocaleLink
-        href="/"
-        className="px-6 py-8 flex items-center gap-3 border-b border-stone-200/50 mb-4"
-      >
-        <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
-          <Img
-            src="/sanad-logo.png"
-            alt="Sanad"
-            className="w-7 h-7 object-contain brightness-0 invert"
-          />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-xl font-bold text-stone-800 tracking-tight leading-none uppercase">
-            {t.brandName}
-          </span>
-          <span className="text-[10px] font-semibold text-orange-600 uppercase tracking-widest mt-1">
-            {t.brandTagline}
-          </span>
-        </div>
-
+      <div className="px-6 py-8  border-b border-stone-200/50 mb-4">
         {/* Mobile Close Button */}
         <button
           onClick={() => setIsSidebarOpen(false)}
-          className={`md:hidden ${
+          className={`lg:hidden ${
             isRTL ? "mr-auto" : "ml-auto"
           } text-stone-400 hover:text-red-500 w-8 h-8 rounded-lg flex items-center justify-center hover:bg-red-50 transition-colors`}
           aria-label="Close menu"
         >
           <IoMdClose size={20} />
         </button>
-      </LocaleLink>
+        <LocaleLink className="flex items-center gap-3" href="/">
+          <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
+            <Img
+              src="/sanad-logo.png"
+              alt="Sanad"
+              className="w-7 h-7 object-contain brightness-0 invert"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-stone-800 tracking-tight leading-none uppercase">
+              {t.brandName}
+            </span>
+            <span className="text-[10px] font-semibold text-orange-600 uppercase tracking-widest mt-1">
+              {t.brandTagline}
+            </span>
+          </div>
+        </LocaleLink>
+      </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 space-y-1.5 overflow-y-auto custom-scrollbar">
@@ -170,13 +168,13 @@ export default function Sidebar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsSidebarOpen(false)}
-            className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[9999] md:hidden"
+            className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[9999] lg:hidden"
           />
         )}
       </AnimatePresence>
 
       {/* Sidebar Aside (Desktop) */}
-      <aside className="hidden md:flex flex-col w-64 h-screen sticky top-0 bg-stone-100 border-r border-stone-200 shadow-sm z-40 shrink-0 overflow-hidden">
+      <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 bg-stone-100 border-r border-stone-200 shadow-sm z-40 shrink-0 overflow-hidden">
         {asideContent}
       </aside>
 
@@ -189,7 +187,7 @@ export default function Sidebar() {
             animate="open"
             exit="closed"
             variants={sidebarVariants}
-            className={`fixed inset-y-0 ${isRTL ? "right-0" : "left-0"} w-72 bg-white z-[10000] flex flex-col shadow-2xl md:hidden overflow-hidden`}
+            className={`fixed inset-y-0 ${isRTL ? "right-0" : "left-0"} w-72 bg-white z-[10000] flex flex-col shadow-2xl lg:hidden overflow-hidden`}
           >
             {asideContent}
           </motion.aside>

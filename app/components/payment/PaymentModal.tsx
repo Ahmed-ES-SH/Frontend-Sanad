@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -15,6 +16,8 @@ import { PaymentProcessing } from "./PaymentProcessing";
 import { PaymentDelayed } from "./PaymentDelayed";
 import { PaymentSummary } from "./PaymentSummary";
 import { StripePaymentForm } from "./StripePaymentForm";
+import { useLocale } from "@/app/hooks/useLocale";
+import { useRouter } from "next/navigation";
 
 const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = stripePublishableKey
@@ -50,6 +53,8 @@ export function PaymentModal({
   onSuccess,
   onError,
 }: PaymentModalProps) {
+  const router = useRouter();
+  const locale = useLocale();
   const t = useTranslation("PaymentModal");
   const [checkoutState, setCheckoutState] =
     useState<CheckoutUiState>("collecting");
@@ -83,7 +88,7 @@ export function PaymentModal({
           setCheckoutState("succeeded");
           stopPolling();
           onSuccess?.();
-          return;
+          router.push(`/${locale}/userdashboard/payments/success`);
         }
 
         if (status === "failed") {
@@ -120,7 +125,7 @@ export function PaymentModal({
         onError?.(t.errors.verificationDelayed);
       },
     });
-  }, [paymentId, stopPolling, onSuccess, onError, t.errors]);
+  }, [stopPolling, paymentId, onSuccess, onError]);
 
   const handleConfirmed = (paymentIntentStatus: string | null) => {
     if (paymentIntentStatus === "requires_payment_method") {

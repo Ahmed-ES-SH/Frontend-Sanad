@@ -8,20 +8,21 @@ import {
   updateProject,
 } from "@/app/actions/portfolioActions";
 import type { Project } from "@/app/types/project";
-import { FiChevronRight, FiAlertCircle, FiLoader } from "react-icons/fi";
+import { FiChevronRight, FiAlertCircle, FiLoader, FiChevronDown } from "react-icons/fi";
 import TechnicalDetailsSection from "@/app/components/dashboard/ProjectsPage/_editProject/TechnicalDetailsSection";
 import MediaSection from "@/app/components/dashboard/ProjectsPage/_editProject/MediaSection";
 import BasicInfoSection from "@/app/components/dashboard/ProjectsPage/_editProject/BasicInfoSection";
-
-export interface FieldErrors {
-  title?: string;
-  shortDesc?: string;
-  longDesc?: string;
-  liveUrl?: string;
-  repoUrl?: string;
-  coverImage?: string;
-  newImage?: string;
-}
+import {
+  FieldErrors,
+  validateAll,
+  addTechHelper,
+  removeTechHelper,
+  addImageHelper,
+  removeImageHelper,
+  markTouchedHelper,
+  handleFieldChangeHelper,
+  toggleSectionHelper,
+} from "@/app/helpers/_dashboard/projectEditHelpers";
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -31,6 +32,7 @@ export default function EditProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
 
   const [title, setTitle] = useState("");
   const [shortDesc, setShortDesc] = useState("");
@@ -72,6 +74,7 @@ export default function EditProjectPage() {
         setRepoUrl(found.repoUrl || "");
         setCoverImage(found.coverImageUrl || "");
         setImages(found.images || []);
+        setIsPublished(found.isPublished || false);
       } catch {
         toast.error("Failed to load project");
         router.push("/en/dashboard/projects");
@@ -83,109 +86,13 @@ export default function EditProjectPage() {
     fetchProject();
   }, [projectId, router]);
 
-  const removeTech = (tech: string) => {
-    setTechStack(techStack.filter((t) => t !== tech));
-  };
-
-  const addTech = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && newTech.trim()) {
-      e.preventDefault();
-      if (!techStack.includes(newTech.trim())) {
-        setTechStack([...techStack, newTech.trim()]);
-      }
-      setNewTech("");
-    }
-  };
-
-  const removeImage = (url: string) => {
-    setImages(images.filter((img) => img !== url));
-  };
-
-  const addImage = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && newImage.trim()) {
-      e.preventDefault();
-      const err = validateField("newImage", newImage.trim());
-      if (err) {
-        setErrors((prev) => ({ ...prev, newImage: err }));
-        setTouched((prev) => new Set(prev).add("newImage"));
-        return;
-      }
-      if (!images.includes(newImage.trim())) {
-        setImages([...images, newImage.trim()]);
-      }
-      setNewImage("");
-      setErrors((prev) => ({ ...prev, newImage: undefined }));
-      setTouched((prev) => {
-        const next = new Set(prev);
-        next.delete("newImage");
-        return next;
-      });
-    }
-  };
-
-  const markTouched = (field: string) => {
-    setTouched((prev) => new Set(prev).add(field));
-  };
-
-  const validateField = (name: string, value: string) => {
-    switch (name) {
-      case "title":
-        return value.trim().length === 0
-          ? "Project title is required"
-          : undefined;
-      case "shortDesc":
-        return value.trim().length === 0
-          ? "A short description is required"
-          : value.length > 150
-            ? `Short description must be under 150 characters (currently ${value.length})`
-            : undefined;
-      case "longDesc":
-        return value.trim().length < 20 && value.trim().length > 0
-          ? "Description is too short — add at least 20 characters"
-          : undefined;
-      case "liveUrl":
-      case "repoUrl":
-      case "coverImage":
-      case "newImage":
-        return value.length > 0 && !/^https?:\/\/.+/.test(value)
-          ? "Please enter a valid URL starting with http:// or https://"
-          : undefined;
-      default:
-        return undefined;
-    }
-  };
-
-  const handleFieldChange = (name: string, value: string) => {
-    if (touched.has(name)) {
-      setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
-    }
-  };
-
-  const validateAll = (): FieldErrors => {
-    const allErrors: FieldErrors = {};
-    const titleErr = validateField("title", title);
-    if (titleErr) allErrors.title = titleErr;
-    const descErr = validateField("shortDesc", shortDesc);
-    if (descErr) allErrors.shortDesc = descErr;
-    const longErr = validateField("longDesc", longDesc);
-    if (longErr) allErrors.longDesc = longErr;
-    const liveErr = validateField("liveUrl", liveUrl);
-    if (liveErr) allErrors.liveUrl = liveErr;
-    const repoErr = validateField("repoUrl", repoUrl);
-    if (repoErr) allErrors.repoUrl = repoErr;
-    const coverErr = validateField("coverImage", coverImage);
-    if (coverErr) allErrors.coverImage = coverErr;
-    return allErrors;
-  };
-
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => {
-      const next = new Set(prev);
-      if (next.has(section)) next.delete(section);
-      else next.add(section);
-      return next;
-    });
-  };
+  const removeTech = (tech: string) => removeTechHelper(tech, techStack, setTechStack);
+  const addTech = (e: React.KeyboardEvent<HTMLInputElement>) => addTechHelper(e, newTech, techStack, setTechStack, setNewTech);
+  const removeImage = (url: string) => removeImageHelper(url, images, setImages);
+  const addImage = (e: React.KeyboardEvent<HTMLInputElement>) => addImageHelper(e, newImage, images, setImages, setNewImage, setErrors, setTouched);
+  const markTouched = (field: string) => markTouchedHelper(field, setTouched);
+  const handleFieldChange = (name: string, value: string) => handleFieldChangeHelper(name, value, touched, setErrors);
+  const toggleSection = (section: string) => toggleSectionHelper(section, setOpenSections);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,7 +106,7 @@ export default function EditProjectPage() {
         "coverImage",
       ]),
     );
-    const allErrors = validateAll();
+    const allErrors = validateAll({ title, shortDesc, longDesc, liveUrl, repoUrl, coverImage });
     setErrors(allErrors);
 
     const errorMessages = Object.entries(allErrors)
@@ -233,6 +140,7 @@ export default function EditProjectPage() {
         repoUrl: repoUrl.trim() || undefined,
         coverImageUrl: coverImage.trim() || undefined,
         images: images.filter(Boolean),
+        isPublished,
       });
 
       if (result.success) {
@@ -286,14 +194,31 @@ export default function EditProjectPage() {
                 Edit: {project.title}
               </h2>
             </div>
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
-              className="px-8 py-3 rounded-xl font-bold text-sm bg-orange-500 text-white shadow-md shadow-orange-500/25 hover:bg-orange-600 active:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {submitting && <FiLoader className="animate-spin" size={16} />}
-              Save Changes
-            </button>
+            
+            <div className="flex items-center gap-4">
+              <div className="relative group">
+                <select
+                  value={isPublished ? "published" : "draft"}
+                  onChange={(e) => setIsPublished(e.target.value === "published")}
+                  className="appearance-none bg-white border border-stone-200 text-stone-700 text-sm font-bold rounded-xl pl-4 pr-10 py-3 shadow-sm hover:border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all cursor-pointer"
+                >
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-stone-400 group-hover:text-orange-500 transition-colors">
+                  <FiChevronDown size={18} />
+                </div>
+              </div>
+
+              <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="px-8 py-3 rounded-xl font-bold text-sm bg-orange-500 text-white shadow-md shadow-orange-500/25 hover:bg-orange-600 active:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {submitting && <FiLoader className="animate-spin" size={16} />}
+                Save Changes
+              </button>
+            </div>
           </div>
 
           {/* Error Summary */}

@@ -38,6 +38,7 @@ export interface ProjectFormData {
   categoryId?: string;
   liveUrl?: string;
   repoUrl?: string;
+  isPublished?: boolean;
 }
 
 export interface PublishToggleResponse {

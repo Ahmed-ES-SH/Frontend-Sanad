@@ -28,8 +28,8 @@ export default async function UserProfilePage({ params }: PageProps) {
 
   return (
     <>
-      <main className="flex-1 overflow-y-auto p-6 md:p-8">
-        <div className="w-full">
+      <main className="flex-1 overflow-y-auto p-2 lg:p-6 md:p-8">
+        <div className="w-full relative">
           {/* Back link */}
           <div className="mb-6">
             <LocaleLink

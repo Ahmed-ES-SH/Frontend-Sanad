@@ -9,11 +9,14 @@ import {
 } from "@/app/types/user";
 import { adminDeleteUser } from "@/app/actions/userActions";
 import { toast } from "sonner";
+import { useAppQuery } from "@/app/hooks/useAppQuery";
+import { useParams } from "next/navigation";
+import { Locale } from "@/app/types/global";
 
 import FilterBar from "./FilterBar";
-import UserTable from "./UserTable";
 import UserTableSkeleton from "./UserTableSkeleton";
-import { useAppQuery } from "@/app/hooks/useAppQuery";
+import DeleteConfirmModal from "./EditUser/DeleteConfirmModal";
+import UserTableWithPagination from "./UserTableWithPagination";
 
 // ============================================================================
 // CLIENT USERS - Main client orchestrator component
@@ -26,7 +29,6 @@ interface ClientUsersProps {
   page: number;
   perPage: number;
   lastPage: number;
-  pendingUsers: number;
 }
 
 export default function ClientUsers({
@@ -35,7 +37,6 @@ export default function ClientUsers({
   page: initialPage,
   perPage,
   lastPage: initialLastPage,
-  pendingUsers,
 }: ClientUsersProps) {
   const router = useRouter();
 
@@ -48,6 +49,9 @@ export default function ClientUsers({
 
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
+  const { locale } = useParams();
 
   // Build query string with filters and pagination
   const queryParams = useMemo(() => {
@@ -114,23 +118,25 @@ export default function ClientUsers({
     setCurrentPage(1);
   }, []);
 
-  // Handle user deletion with confirmation
-  const handleDelete = async (user: User) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete "${user.name || user.email}"? This action cannot be undone.`,
-    );
+  // Handle user deletion trigger
+  const handleDeleteTrigger = (user: User) => {
+    setUserToDelete(user);
+  };
 
-    if (!confirmed) return;
+  // Confirm and perform user deletion
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
 
-    setDeletingId(user.id);
+    setDeletingId(userToDelete.id);
 
     try {
-      const result = await adminDeleteUser(user.id);
+      const result = await adminDeleteUser(userToDelete.id);
 
       if (result.success) {
         toast.success(result.message);
         router.refresh();
         refetch();
+        setUserToDelete(null); // Close modal on success
       } else {
         toast.error(result.message);
       }
@@ -164,157 +170,21 @@ export default function ClientUsers({
           total={total}
           perPage={perPage}
           onPageChange={handlePageChange}
-          onDelete={handleDelete}
+          onDelete={handleDeleteTrigger}
           deletingId={deletingId}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!userToDelete}
+        userName={userToDelete?.name || ""}
+        userEmail={userToDelete?.email || ""}
+        locale={locale as Locale}
+        isDeleting={deletingId !== null}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={confirmDelete}
+      />
     </div>
-  );
-}
-
-// ============================================================================
-// USER TABLE WITH PAGINATION - Wraps UserTable with pagination controls
-// ============================================================================
-
-interface UserTableWithPaginationProps {
-  users: User[];
-  currentPage: number;
-  totalPages: number;
-  total: number;
-  perPage: number;
-  onPageChange: (page: number) => void;
-  onDelete: (user: User) => void;
-  deletingId: number | null;
-}
-
-function UserTableWithPagination({
-  users,
-  currentPage,
-  totalPages,
-  total,
-  perPage,
-  onPageChange,
-  onDelete,
-  deletingId,
-}: UserTableWithPaginationProps) {
-  const startIndex = (currentPage - 1) * perPage;
-
-  // Error state
-  if (users.length === 0 && total === 0) {
-    return (
-      <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-        <div className="text-stone-400 text-sm">
-          No users found. Create your first user to get started.
-        </div>
-      </div>
-    );
-  }
-
-  if (users.length === 0) {
-    return (
-      <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-        <div className="text-stone-400 text-sm">
-          No users found matching your filters.
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <UserTable users={users} onDelete={onDelete} deletingId={deletingId} />
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="bg-white rounded-xl shadow-sm px-6 py-4 flex items-center justify-between">
-          <p className="text-xs text-stone-500 font-medium">
-            Showing {startIndex + 1}-{Math.min(startIndex + perPage, total)} of{" "}
-            {total} users
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              let page: number;
-              if (totalPages <= 5) {
-                page = i + 1;
-              } else if (currentPage <= 3) {
-                page = i + 1;
-              } else if (currentPage >= totalPages - 2) {
-                page = totalPages - 4 + i;
-              } else {
-                page = currentPage - 2 + i;
-              }
-
-              return (
-                <button
-                  key={page}
-                  onClick={() => onPageChange(page)}
-                  className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-colors ${
-                    currentPage === page
-                      ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
-                      : "text-stone-500 hover:bg-stone-200"
-                  }`}
-                >
-                  {page}
-                </button>
-              );
-            })}
-
-            {totalPages > 5 && currentPage < totalPages - 2 && (
-              <>
-                <span className="text-stone-400 mx-1">...</span>
-                <button
-                  onClick={() => onPageChange(totalPages)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg text-stone-500 hover:bg-stone-200 transition-colors text-xs font-bold"
-                >
-                  {totalPages}
-                </button>
-              </>
-            )}
-
-            <button
-              onClick={() =>
-                onPageChange(Math.min(totalPages, currentPage + 1))
-              }
-              disabled={currentPage === totalPages}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:bg-stone-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
-    </>
   );
 }

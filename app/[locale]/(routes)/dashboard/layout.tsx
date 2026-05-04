@@ -17,7 +17,7 @@ export default async function DashboardLayout({ children, params }: any) {
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         <TopNavBar />
-        <main id="main-content" className="flex-1 p-4">
+        <main id="main-content" className="flex-1 p-2">
           {children}
         </main>
       </div>

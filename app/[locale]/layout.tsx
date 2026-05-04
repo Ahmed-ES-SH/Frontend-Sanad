@@ -47,7 +47,7 @@ export default async function layout({ children, params }: any) {
       <body className="min-h-full flex flex-col font-body">
         <ClientLayout>
           <Navbar />
-          <Toaster position="top-right" closeButton richColors />
+          <Toaster position="top-center" closeButton richColors />
           {children}
           <Footer />
         </ClientLayout>
