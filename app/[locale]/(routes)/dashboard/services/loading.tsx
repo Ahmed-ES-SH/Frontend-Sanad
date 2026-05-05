@@ -1,4 +1,4 @@
-export default function ServicesLoading() {
+export default function loading() {
   return (
     <div className="p-8 space-y-8 animate-pulse">
       {/* Header skeleton */}

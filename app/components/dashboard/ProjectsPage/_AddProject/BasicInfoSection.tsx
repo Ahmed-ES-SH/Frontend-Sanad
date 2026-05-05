@@ -28,12 +28,6 @@ interface BasicInfoSectionProps {
   categories: Category[];
 }
 
-const categories = [
-  "Web Application",
-  "Mobile App",
-  "Cloud Architecture",
-  "AI Implementation",
-];
 
 export default function BasicInfoSection({
   t,
@@ -51,7 +45,7 @@ export default function BasicInfoSection({
   errors,
   markTouched,
   handleFieldChange,
-  categories: cats,
+  categories,
 }: BasicInfoSectionProps) {
   return (
     <section className="bg-white rounded-xl border border-stone-200/50 overflow-hidden">
@@ -131,11 +125,10 @@ export default function BasicInfoSection({
                   handleFieldChange("title", e.target.value);
                 }}
                 onBlur={() => markTouched("title")}
-                className={`w-full bg-stone-50 border-none rounded-lg p-4 focus:ring-2 focus:ring-orange-500/50 text-stone-800 placeholder:text-stone-400 ${
-                  touched.has("title") && errors.title
-                    ? "ring-2 ring-red-400/40"
-                    : ""
-                }`}
+                className={`w-full bg-stone-50 border-none rounded-lg p-4 focus:ring-2 focus:ring-orange-500/50 text-stone-800 placeholder:text-stone-400 ${touched.has("title") && errors.title
+                  ? "ring-2 ring-red-400/40"
+                  : ""
+                  }`}
                 placeholder={
                   t?.basicInfo?.titlePlaceholder ||
                   "e.g. Modern E-commerce Platform Re-design"
@@ -165,18 +158,17 @@ export default function BasicInfoSection({
                   handleFieldChange("category", e.target.value);
                 }}
                 onBlur={() => markTouched("category")}
-                className={`w-full bg-stone-50 border-none rounded-lg p-4 focus:ring-2 focus:ring-orange-500/50 text-stone-800 appearance-none cursor-pointer ${
-                  touched.has("category") && errors.category
-                    ? "ring-2 ring-red-400/40"
-                    : ""
-                }`}
+                className={`w-full bg-stone-50 border-none rounded-lg p-4 focus:ring-2 focus:ring-orange-500/50 text-stone-800 appearance-none cursor-pointer ${touched.has("category") && errors.category
+                  ? "ring-2 ring-red-400/40"
+                  : ""
+                  }`}
               >
                 <option value="">
                   {t?.basicInfo?.categoryPlaceholder || "Select a category"}
                 </option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                {categories && Array.isArray(categories) && categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name ?? "Not Found"}
                   </option>
                 ))}
               </select>
@@ -202,11 +194,10 @@ export default function BasicInfoSection({
                 }}
                 onBlur={() => markTouched("shortDesc")}
                 maxLength={150}
-                className={`w-full bg-stone-50 border-none rounded-lg p-4 focus:ring-2 focus:ring-orange-500/50 text-stone-800 placeholder:text-stone-400 ${
-                  touched.has("shortDesc") && errors.shortDesc
-                    ? "ring-2 ring-red-400/40"
-                    : ""
-                }`}
+                className={`w-full bg-stone-50 border-none rounded-lg p-4 focus:ring-2 focus:ring-orange-500/50 text-stone-800 placeholder:text-stone-400 ${touched.has("shortDesc") && errors.shortDesc
+                  ? "ring-2 ring-red-400/40"
+                  : ""
+                  }`}
                 placeholder={
                   t?.basicInfo?.shortDescPlaceholder ||
                   "Brief summary for list views (max 150 characters)"
@@ -237,11 +228,10 @@ export default function BasicInfoSection({
                 </span>
               </label>
               <div
-                className={`bg-stone-50 rounded-lg border-none focus-within:ring-2 focus-within:ring-orange-500/50 transition-all overflow-hidden ${
-                  touched.has("longDesc") && errors.longDesc
-                    ? "ring-2 ring-red-400/40"
-                    : ""
-                }`}
+                className={`bg-stone-50 rounded-lg border-none focus-within:ring-2 focus-within:ring-orange-500/50 transition-all overflow-hidden ${touched.has("longDesc") && errors.longDesc
+                  ? "ring-2 ring-red-400/40"
+                  : ""
+                  }`}
               >
                 <textarea
                   value={longDesc}

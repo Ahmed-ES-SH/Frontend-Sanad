@@ -67,18 +67,58 @@ export default function MediaCard({
             placeholder={translations.coverImageUrlPlaceholder}
           />
         </div>
-        {formData.coverImageUrl && (
-          <div className="relative group overflow-hidden rounded-xl bg-white border border-stone-200 flex items-center justify-center cursor-pointer min-h-[120px] shadow-inner">
-            <Image
-              className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000"
-              src={formData.coverImageUrl}
-              alt={translations.cover}
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          {/* Icon Preview */}
+          <div className="space-y-2">
+            <span className="text-[0.65rem] font-bold text-stone-400 uppercase tracking-widest block text-center">
+              Icon Preview
+            </span>
+            <div className="relative group overflow-hidden rounded-2xl  border border-stone-100 flex items-center justify-center cursor-pointer bg-transparent max-w-[120px] mx-auto   transition-all duration-500 h-[50vh] ">
+              {formData.iconUrl ? (
+                <div className="relative w-32 h-32 p-2 bg-gray-300 rounded-lg">
+                  <Image
+                    className="object-contain w-12 h-12 group-hover:scale-110 transition-transform duration-700"
+                    src={formData.iconUrl}
+                    alt="Icon"
+                    fill
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center border border-dashed border-stone-200 text-stone-300 group-hover:border-stone-300 transition-colors">
+                  <FiImage size={20} />
+                </div>
+              )}
+            </div>
           </div>
-        )}
+
+          {/* Cover Preview */}
+          <div className="space-y-2">
+            <span className="text-[0.65rem] font-bold text-stone-400 uppercase tracking-widest block text-center">
+              Cover Preview
+            </span>
+            <div className="relative group overflow-hidden rounded-2xl bg-white border border-stone-100 flex items-center justify-center cursor-pointer h-[50vh] shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-sm transition-all duration-500">
+              {formData.coverImageUrl ? (
+                <Image
+                  className="absolute inset-0 w-full h-full  object-cover group-hover:scale-105 transition-transform duration-1000"
+                  src={formData.coverImageUrl}
+                  alt={translations.cover}
+                  fill
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full bg-stone-50 flex items-center justify-center border border-dashed border-stone-200 text-stone-300 group-hover:border-stone-300 transition-colors mx-4 my-2 rounded-xl">
+                  <FiImage size={24} />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

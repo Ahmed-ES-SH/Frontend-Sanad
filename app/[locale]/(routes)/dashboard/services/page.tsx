@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import ServicesLoading from "./loading";
 import { getAdminServices } from "@/app/actions/servicesActions";
 import { getCategories } from "@/app/actions/blogActions";
 import { ServiceQueryParams } from "@/app/types/service";
@@ -37,14 +35,12 @@ export default async function ServicesPage({
 
   return (
     <div className="min-h-screen">
-      <Suspense fallback={<ServicesLoading />}>
-        <ServicesContent
-          initialServices={initialServices}
-          initialMeta={meta}
-          categories={categories}
-          initialQueryParams={queryParams}
-        />
-      </Suspense>
+      <ServicesContent
+        initialServices={initialServices}
+        initialMeta={meta}
+        categories={categories}
+        initialQueryParams={queryParams}
+      />
     </div>
   );
 }

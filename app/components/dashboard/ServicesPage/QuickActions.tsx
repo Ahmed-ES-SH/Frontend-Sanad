@@ -12,7 +12,7 @@ const quickActions = [
     bgColor: "bg-orange-500",
     shadowColor: "shadow-orange-500/20",
     isPrimary: true,
-    href: "/dashboard/services/new",
+    href: "/dashboard/addservice",
   },
   {
     id: 2,

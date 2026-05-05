@@ -1,21 +1,17 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import { PaginationMeta } from "@/app/types/global";
 
 interface ServicesPaginationProps {
   meta?: PaginationMeta;
+  currentPage: number;
+  onPageChange: (page: number) => void;
 }
 
-export function ServicesPagination({ meta }: ServicesPaginationProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const currentPage = meta?.page || 1;
-  const totalPages = meta?.total || 1;
+export function ServicesPagination({ meta, currentPage, onPageChange }: ServicesPaginationProps) {
+  const totalPages = meta?.lastPage || 1;
 
   // Generate page numbers to display
   const getPageNumbers = () => {
@@ -54,14 +50,12 @@ export function ServicesPagination({ meta }: ServicesPaginationProps) {
   };
 
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    onPageChange(page);
   };
 
-  if (totalPages <= 1) {
-    return null;
-  }
+  const shouldHidePagination = !meta || meta.lastPage <= 1;
+
+  if (shouldHidePagination) return null;
 
   return (
     <motion.div
@@ -87,11 +81,10 @@ export function ServicesPagination({ meta }: ServicesPaginationProps) {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => handlePageChange(page)}
-            className={`w-10 h-10 flex items-center justify-center rounded-lg font-bold text-xs transition-all ${
-              currentPage === page
-                ? "bg-orange-500 text-white"
-                : "bg-stone-100 text-stone-500 hover:bg-orange-500 hover:text-white"
-            }`}
+            className={`w-10 h-10 flex items-center justify-center rounded-lg font-bold text-xs transition-all ${currentPage === page
+              ? "bg-orange-500 text-white"
+              : "bg-stone-100 text-stone-500 hover:bg-orange-500 hover:text-white"
+              }`}
           >
             {page}
           </motion.button>

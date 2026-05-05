@@ -6,7 +6,6 @@ import { PaginationMeta } from "@/app/types/global";
 import { useAppQuery } from "@/app/hooks/useAppQuery";
 import { togglePublishService, deleteService } from "@/app/actions/servicesActions";
 import {
-  DEFAULT_CATEGORY,
   SERVICE_QUERY_STALE_TIME,
   buildServiceQueryKey,
   buildServiceQueryString,

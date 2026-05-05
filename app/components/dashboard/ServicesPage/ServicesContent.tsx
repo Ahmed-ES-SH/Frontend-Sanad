@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import ServiceCards from "./ServiceCards";
 import { Service } from "@/app/types/service";
 import { Category, PaginationMeta } from "@/app/types/global";
+
+
+import ServiceCards from "./ServiceCards";
 import FilterBar from "./FilterBar";
 import ChartsSection from "./ChartsSection";
 import QuickActions from "./QuickActions";
-import { ServicesPagination } from "./ServicesPagination";
 
 interface ServicesContentProps {
   initialServices?: Service[];
@@ -91,8 +92,6 @@ export default function ServicesContent({
           sortOrder={currentSortOrder}
         />
 
-        {/* Pagination */}
-        <ServicesPagination meta={initialMeta} />
       </main>
     </>
   );

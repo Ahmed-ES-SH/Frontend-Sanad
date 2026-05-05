@@ -146,7 +146,7 @@ export default function AddServiceContent() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="p-4 md:p-8 max-w-[1400px] mx-auto w-full space-y-8"
+      className="p-4 md:p-8 w-full space-y-8"
       dir={isRTL ? "rtl" : "ltr"}
     >
       {error && (
@@ -174,40 +174,43 @@ export default function AddServiceContent() {
         isSubmitting={isSubmitting}
       />
 
-      <div className="grid grid-cols-12 gap-6 items-start">
+      <div className="flex flex-col  mx-auto w-full space-y-12 pb-24">
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="col-span-12 lg:col-span-9 space-y-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full"
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <BasicInfoCard
-              formData={formData}
-              translations={basicInfoTranslations}
-              onInputChange={handleInputChange}
-            />
-            <MediaCard
-              formData={formData}
-              translations={mediaTranslations}
-              onInputChange={handleInputChange}
-            />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="col-span-12 lg:col-span-3 space-y-6"
-        >
-          <PublishingSettingsCard translations={publishingTranslations} />
-
-          <ServicePreviewCard
+          <BasicInfoCard
             formData={formData}
-            translations={previewTranslations}
+            translations={basicInfoTranslations}
+            onInputChange={handleInputChange}
           />
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full"
+        >
+          <MediaCard
+            formData={formData}
+            translations={mediaTranslations}
+            onInputChange={handleInputChange}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full"
+        >
+          <PublishingSettingsCard translations={publishingTranslations} />
+        </motion.div>
+
+
       </div>
     </motion.div>
   );

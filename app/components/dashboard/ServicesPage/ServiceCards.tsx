@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Service } from "@/app/types/service";
 import { PaginationMeta } from "@/app/types/global";
 import { useServiceCards, ServiceCardData } from "@/app/hooks/services/useServiceCards";
@@ -11,6 +11,7 @@ import { DeleteConfirmDialog } from "./DeleteConfirmDialog";
 import { EmptyState } from "./EmptyState";
 import { getTranslations } from "@/app/helpers/getTranslations";
 import { useLocale } from "@/app/hooks/useLocale";
+import { ServicesPagination } from "./ServicesPagination";
 
 interface ServiceCardsProps {
   initialServices?: Service[];
@@ -33,8 +34,11 @@ export default function ServiceCards({
   sortBy = "createdAt",
   sortOrder = "DESC",
 }: ServiceCardsProps) {
-  const searchParams = useSearchParams();
-  const page = parseInt(searchParams.get("page") || "1", 10);
+  const [page, setPage] = useState(initialMeta?.page || 1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, categoryId, sortBy, sortOrder]);
   const locale = useLocale();
   const translations = getTranslations(locale);
   const t = translations.ServicesPage?.ServiceCards || {
@@ -65,7 +69,6 @@ export default function ServiceCards({
     handleConfirmDelete,
     handleCancelDelete,
     handleTogglePublish,
-    refetch,
   } = useServiceCards({
     initialServices,
     initialMeta,
@@ -88,17 +91,17 @@ export default function ServiceCards({
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {showSkeletons
           ? Array.from({ length: DEFAULT_SKELETON_COUNT }).map((_, i) => (
-              <ServiceCardSkeleton key={i} />
-            ))
+            <ServiceCardSkeleton key={i} />
+          ))
           : services.map((service: ServiceCardData) => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                onDelete={handleDeleteClick}
-                onTogglePublish={handleTogglePublish}
-                translations={t}
-              />
-            ))}
+            <ServiceCard
+              key={service.id}
+              service={service}
+              onDelete={handleDeleteClick}
+              onTogglePublish={handleTogglePublish}
+              translations={t}
+            />
+          ))}
       </section>
 
       {/* Empty State */}
@@ -114,6 +117,15 @@ export default function ServiceCards({
         isOpen={Boolean(deleteId)}
         translations={{ deleteDialog: t.deleteDialog }}
       />
+
+      {/* Pagination */}
+      <div className="mt-8">
+        <ServicesPagination
+          meta={meta}
+          currentPage={page}
+          onPageChange={setPage}
+        />
+      </div>
     </>
   );
 }
