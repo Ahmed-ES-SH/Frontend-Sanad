@@ -31,7 +31,9 @@ export function MessagesTable({
   const t = useTranslation("ContactUsPage.MessagesTable");
   const locale = useLocale() as LocaleType;
 
-  const totalPages = meta.lastPage;
+  const totalPages = meta?.lastPage ?? 1;
+
+  console.log(meta)
 
   return (
     <section
@@ -61,7 +63,7 @@ export function MessagesTable({
       <PaginationControls
         page={page}
         totalPages={totalPages}
-        total={meta.total}
+        total={meta?.total ?? 0}
         currentPageItems={messages.length}
         isLoading={isLoading}
         locale={locale}

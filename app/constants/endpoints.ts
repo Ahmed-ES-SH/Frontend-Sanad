@@ -25,6 +25,18 @@ export const USER_ENDPOINTS = {
   ADMIN_DELETE: (id: string | number) => `/api/user/${id}`,
 } as const;
 
+export const CATEGORIES_ENDPOINTS = {
+  GET_CATEGORIES: "/api/categories",
+  GET_CATEGORY: (slug: string) => `/api/categories/${slug}`,
+
+  // Admin endpoints - per backend API plan
+  ADMIN_LIST: "/api/admin/categories",
+  ADMIN_GET: (id: string | number) => `/api/admin/categories/${id}`,
+  ADMIN_CREATE: "/api/admin/categories",
+  ADMIN_UPDATE: (id: string | number) => `/api/admin/categories/${id}`,
+  ADMIN_DELETE: (id: string | number) => `/api/admin/categories/${id}`,
+} as const;
+
 export const SERVICES_ENDPOINTS = {
   LIST_PUBLISHED: "/api/services",
   GET_BY_SLUG: (slug: string) => `/api/services/${slug}`,

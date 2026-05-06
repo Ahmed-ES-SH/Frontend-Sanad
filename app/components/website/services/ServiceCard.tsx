@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { memo } from "react";
 import { Service } from "@/app/types/service";
 import { FiArrowUpRight } from "react-icons/fi";
-import LocaleLink from "../../global/LocaleLink";
 import { formatTitle } from "@/app/helpers/formatTitle";
-import Img from "../../global/Img";
 import { Messages } from "@/app/hooks/useTranslation";
+import LocaleLink from "../../global/LocaleLink";
+import Img from "../../global/Img";
 
 interface ServiceCardProps {
   service: Service;
@@ -37,7 +37,7 @@ const ServiceCard = memo(function ServiceCard({
         className="group relative flex flex-col rounded-3xl bg-white border border-surface-100 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-500 overflow-hidden h-full"
       >
         {/* Cover Image Area */}
-        <div className="relative w-full aspect-[4/3] sm:aspect-[3/2] overflow-hidden bg-surface-100">
+        <div className="relative w-full aspect-4/3 sm:aspect-3/2 overflow-hidden bg-surface-100">
           <Img
             src={service.coverImageUrl}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -47,7 +47,7 @@ const ServiceCard = memo(function ServiceCard({
           {/* Floating Category Badge */}
           <div className="absolute top-4 left-4 z-10">
             <span className="px-3 py-1.5 truncate bg-surface-50 text-surface-900 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-surface-200 shadow-sm">
-              {service.category.name}
+              {service.category?.name || 'not Found'}
             </span>
           </div>
 
@@ -69,7 +69,7 @@ const ServiceCard = memo(function ServiceCard({
 
           <div className="mt-auto pt-4 border-t border-surface-100 flex items-center justify-between text-primary font-bold text-xs uppercase tracking-widest">
             <span>{t.findSolution}</span>
-            <FiArrowUpRight className="size-4 rtl:rotate-[-90deg]" />
+            <FiArrowUpRight className="size-4 rtl:-rotate-90" />
           </div>
         </div>
       </LocaleLink>

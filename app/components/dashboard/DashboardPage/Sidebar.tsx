@@ -21,10 +21,12 @@ import Img from "../../global/Img";
 import { useAuthStore } from "@/app/store/AuthSlice";
 import useVariablesStore from "@/app/store/VariablesSlice";
 import { useTranslation } from "@/app/hooks/useTranslation";
+import { BsLayers } from "react-icons/bs";
 
 const navItems = [
   { labelKey: "overview", href: "/dashboard", icon: FiLayout },
   { labelKey: "users", href: "/dashboard/users", icon: FiUsers },
+  { labelKey: "categories", href: "/dashboard/categories", icon: BsLayers },  
   { labelKey: "projects", href: "/dashboard/projects", icon: FiTarget },
   { labelKey: "services", href: "/dashboard/services", icon: FiTool },
   { labelKey: "contactUs", href: "/dashboard/contactus", icon: FiMail },
@@ -168,7 +170,7 @@ export default function Sidebar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsSidebarOpen(false)}
-            className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[9999] lg:hidden"
+            className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-9999 lg:hidden"
           />
         )}
       </AnimatePresence>
@@ -187,7 +189,7 @@ export default function Sidebar() {
             animate="open"
             exit="closed"
             variants={sidebarVariants}
-            className={`fixed inset-y-0 ${isRTL ? "right-0" : "left-0"} w-72 bg-white z-[10000] flex flex-col shadow-2xl lg:hidden overflow-hidden`}
+            className={`fixed inset-y-0 ${isRTL ? "right-0" : "left-0"} w-72 bg-white z-10000 flex flex-col shadow-2xl lg:hidden overflow-hidden`}
           >
             {asideContent}
           </motion.aside>

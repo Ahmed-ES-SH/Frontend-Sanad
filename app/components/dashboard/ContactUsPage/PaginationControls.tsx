@@ -59,8 +59,8 @@ export function PaginationControls({
         <button
           key={p}
           onClick={() => onPageChange(p as number)}
-          disabled={isLoading}
-          className={`w-8 h-8 rounded-xl text-[11px] font-bold transition-all ${
+          disabled={isLoading || page === p}
+          className={`w-8 h-8 rounded-xl text-[11px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
             page === p
               ? "bg-orange-500 text-white shadow-sm border border-orange-600"
               : "bg-white text-stone-600 border border-stone-200 hover:bg-stone-50"

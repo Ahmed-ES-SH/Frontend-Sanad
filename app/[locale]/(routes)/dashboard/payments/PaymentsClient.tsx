@@ -34,27 +34,13 @@ interface PaymentsClientProps {
   initialData: PaginatedPaymentsResponse | null;
 }
 
-// Simple debounce hook just in case it doesn't exist at @/lib/hooks/useDebounce
-function useLocalDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value);
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-  return debouncedValue;
-}
+
 
 export default function PaymentsClient({ initialData }: PaymentsClientProps) {
   const t = useTranslation("PaymentsPage");
 
   // Filter state
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | "">("");
-  const [searchFilter, setSearchFilter] = useState<string>("");
-  const debouncedSearch = useLocalDebounce(searchFilter, 500);
   const [page, setPage] = useState(1);
   const limit = 10;
 
@@ -68,12 +54,8 @@ export default function PaymentsClient({ initialData }: PaymentsClientProps) {
   queryParams.set("page", String(page));
   queryParams.set("limit", String(limit));
   if (statusFilter) queryParams.set("status", statusFilter);
-  // Assuming we use 'userId' for searching if UUID format, else we might not pass it
-  // Backend doesn't support 'search' natively based on the provided spec,
-  // but if debouncedSearch looks like a UUID we could pass it as userId.
-  if (debouncedSearch) {
-    queryParams.set("userId", debouncedSearch);
-  }
+
+
 
   const endpoint = `/api/admin/payments?${queryParams.toString()}`;
 
@@ -84,12 +66,12 @@ export default function PaymentsClient({ initialData }: PaymentsClientProps) {
     error,
     refetch,
   } = useAppQuery<PaginatedPaymentsResponse>({
-    queryKey: ["admin-payments", page, statusFilter, debouncedSearch],
+    queryKey: ["admin-payments", page, statusFilter],
     endpoint,
     options: {
       // Use initialData for the very first render if we are on page 1 with no filters
       initialData:
-        page === 1 && !statusFilter && !debouncedSearch && initialData
+        page === 1 && !statusFilter && initialData
           ? initialData
           : undefined,
     },
@@ -111,21 +93,9 @@ export default function PaymentsClient({ initialData }: PaymentsClientProps) {
     refetch();
   }, [refetch]);
 
-  const handleStatusFilterChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setStatusFilter(e.target.value as PaymentStatus | "");
-      setPage(1); // reset to page 1 on filter change
-    },
-    [],
-  );
 
-  const handleSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchFilter(e.target.value);
-      setPage(1); // reset to page 1 on search change
-    },
-    [],
-  );
+
+
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage);
@@ -243,31 +213,29 @@ export default function PaymentsClient({ initialData }: PaymentsClientProps) {
         </motion.div>
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[180px] max-w-xs">
-            <FiFilter className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-stone-400" />
-            <input
-              className="w-full pl-8 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:border-orange-300 focus:outline-none"
-              placeholder={
-                t.PaymentFilters.searchPlaceholder || "Search by User ID..."
-              }
-              type="text"
-              value={searchFilter}
-              onChange={handleSearchChange}
-              aria-label={t.PaymentFilters.searchPlaceholder}
-            />
-          </div>
-          <select
-            className="px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg text-stone-600 focus:border-orange-300 focus:outline-none"
-            value={statusFilter}
-            onChange={handleStatusFilterChange}
-          >
-            <option value="">{t.PaymentFilters.statusAll}</option>
-            <option value="succeeded">{t.PaymentFilters.success}</option>
-            <option value="pending">{t.PaymentFilters.pending}</option>
-            <option value="failed">{t.PaymentFilters.failed}</option>
-            <option value="refunded">Refunded</option>
-          </select>
+        <div className="flex flex-wrap items-center gap-2">
+          {[
+            { value: "", label: t.PaymentFilters.statusAll },
+            { value: "succeeded", label: t.PaymentFilters.success },
+            { value: "pending", label: t.PaymentFilters.pending },
+            { value: "failed", label: t.PaymentFilters.failed },
+            { value: "refunded", label: "Refunded" },
+          ].map((status) => (
+            <button
+              key={status.value}
+              onClick={() => {
+                setStatusFilter(status.value as PaymentStatus | "");
+                setPage(1);
+              }}
+              className={`px-4 py-2 text-xs font-medium rounded-xl transition-all duration-200 border ${
+                statusFilter === status.value
+                  ? "bg-orange-600 text-white border-orange-600 shadow-md shadow-orange-100"
+                  : "bg-white text-stone-600 border-stone-200 hover:border-orange-300 hover:text-orange-600"
+              }`}
+            >
+              {status.label}
+            </button>
+          ))}
         </div>
 
         {/* Transactions Table */}
