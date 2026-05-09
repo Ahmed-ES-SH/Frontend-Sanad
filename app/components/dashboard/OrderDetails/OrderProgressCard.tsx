@@ -36,7 +36,7 @@ export function OrderProgressCard({ currentStatus }: OrderProgressCardProps) {
       variants={container}
       initial="hidden"
       animate="show"
-      className="surface-card p-6 mb-8 overflow-hidden"
+      className="surface-card p-6 px-12 mb-8 overflow-hidden"
     >
       <motion.h3
         variants={item}

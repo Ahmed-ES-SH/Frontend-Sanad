@@ -7,7 +7,8 @@ import {
   MarkAllReadResponse,
   BroadcastResponse,
   NotificationPreferences,
-  SendNotificationFormData,
+  SendNotificationDto,
+  SendNotificationResponse,
   BroadcastNotificationFormData,
   UpdatePreferencesFormData,
 } from "@/app/types/notification";
@@ -152,12 +153,12 @@ export async function adminFetchNotifications(
   return result.data;
 }
 
-export async function sendNotification(
-  data: SendNotificationFormData,
-): Promise<{ success: boolean }> {
+export async function adminSendNotification(
+  data: SendNotificationDto,
+): Promise<SendNotificationResponse> {
   const result = await globalRequest<
-    SendNotificationFormData,
-    { success: boolean }
+    SendNotificationDto,
+    SendNotificationResponse
   >({
     endpoint: ENDPOINTS.ADMIN_SEND,
     method: "POST",
@@ -166,10 +167,28 @@ export async function sendNotification(
   });
 
   if (!result.success) {
+    // Map HTTP status codes to actionable messages
+    const status = result.statusCode;
+    if (status === 401) {
+      throw new Error("Your session has expired. Please log in again.");
+    }
+    if (status === 403) {
+      throw new Error(
+        "You do not have permission to send notifications. Admin access required.",
+      );
+    }
     throw new Error(result.message);
   }
 
-  return { success: result.success };
+  return (
+    result.data ?? {
+      success: true,
+      message: "Notification sent",
+      sent: 0,
+      failed: 0,
+      failedIds: [],
+    }
+  );
 }
 
 export async function broadcastNotification(

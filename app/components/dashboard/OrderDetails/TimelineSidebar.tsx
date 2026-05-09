@@ -4,6 +4,7 @@
 
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiClock, FiSend } from "react-icons/fi";
 
@@ -45,6 +46,15 @@ export function TimelineSidebar({
   onPostUpdate,
 }: TimelineSidebarProps) {
   const t = useTranslation("orderDetails");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [hasFocused, setHasFocused] = useState(false);
+
+  useEffect(() => {
+    if (!hasFocused && submitState === "idle") {
+      textareaRef.current?.focus();
+      setHasFocused(true);
+    }
+  }, [submitState, hasFocused]);
 
   return (
     <motion.div
@@ -85,6 +95,7 @@ export function TimelineSidebar({
         </label>
         <div className="relative group">
           <textarea
+            ref={textareaRef}
             className="surface-input w-full p-4 body-sm focus:ring-2 focus:ring-primary/20 transition-all resize-none placeholder:text-surface-300 rounded-xl bg-surface-50 border-surface-200"
             placeholder={t.noteForTheTeam}
             rows={3}

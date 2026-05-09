@@ -1,8 +1,13 @@
 "use server";
 
 import { PAYMENTS_ENDPOINTS } from "@/app/constants/endpoints";
-import { PaginatedPaymentsResponse, PaymentFilterDto } from "../types/payments";
+import {
+  PaginatedPaymentsResponse,
+  PaymentFilterDto,
+  PaymentStatistics,
+} from "../types/payments";
 import { globalRequest } from "../helpers/globalRequest";
+import { PaginationMeta } from "../types/global";
 
 /* =========================================================
    HELPERS
@@ -39,6 +44,29 @@ export async function getInitialPayments(
     method: "GET",
 
     defaultErrorMessage: "Failed to fetch payments. Please try again.",
+  });
+
+  if (!res.success) {
+    return res;
+  }
+
+  return {
+    success: true,
+    data: res.data,
+  };
+}
+
+export async function getPaymentStats(): Promise<{
+  success: boolean;
+  data?: PaymentStatistics;
+  meta?: PaginationMeta;
+}> {
+  const res = await globalRequest<never, PaymentStatistics>({
+    endpoint: PAYMENTS_ENDPOINTS.ADMIN_STATS,
+
+    method: "GET",
+
+    defaultErrorMessage: "Failed to fetch payment stats. Please try again.",
   });
 
   if (!res.success) {

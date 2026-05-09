@@ -20,6 +20,12 @@ export interface ContactListResponse {
   meta: PaginationMeta;
 }
 
+export interface ContactStatsResponse {
+  total: number;
+  unread: number;
+  read: number;
+}
+
 export interface ContactSubmitResponse {
   message: string;
   id: string;

@@ -31,13 +31,13 @@ export function StatsCards({
     {
       label: t.unread,
       value: unread.toString(),
-      sub: locale === "ar" ? "بحاجة لرد" : "Needs Attention",
+      sub: locale === "ar" ? "غير مقروءة" : "Unreaded",
       color: "text-orange-600",
     },
     {
-      label: t.replied,
+      label: t.readed,
       value: replied.toString(),
-      sub: locale === "ar" ? "تم الرد" : "Replied",
+      sub: locale === "ar" ? "مقروءة" : "Readed",
       color: "text-emerald-600",
     },
     {

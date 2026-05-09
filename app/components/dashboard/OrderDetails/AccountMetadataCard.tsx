@@ -5,15 +5,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FiUserCheck, FiShield, FiFileText } from "react-icons/fi";
+import { FiUserCheck, FiShield, FiFileText, FiMail } from "react-icons/fi";
 
 import { MetaItem } from "./MetaItem";
 import { useTranslation } from "@/app/hooks/useTranslation";
+import type { AdminOrder } from "@/app/types/order";
 
 interface AccountMetadataCardProps {
-  accountManager?: string;
-  securityLevel?: string;
-  contract?: string;
+  order?: AdminOrder;
 }
 
 // Animation variants
@@ -30,18 +29,14 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-const defaultValues = {
-  accountManager: "Mark Thompson",
-  securityLevel: "Level 3 Verified",
-  contract: "Annual Agreement",
-};
-
 export function AccountMetadataCard({
-  accountManager = defaultValues.accountManager,
-  securityLevel = defaultValues.securityLevel,
-  contract = defaultValues.contract,
+  order,
 }: AccountMetadataCardProps) {
   const t = useTranslation("orderDetails");
+
+  const accountManager = order?.user?.name || "—";
+  const email = order?.user?.email || "—";
+  const userId = order?.userId ? `#${order.userId}` : "—";
 
   return (
     <motion.div
@@ -63,11 +58,15 @@ export function AccountMetadataCard({
           value={accountManager}
         />
         <MetaItem
-          icon={<FiShield />}
-          label={t.securityLevel}
-          value={securityLevel}
+          icon={<FiMail />}
+          label="Email"
+          value={email}
         />
-        <MetaItem icon={<FiFileText />} label={t.contract} value={contract} />
+        <MetaItem
+          icon={<FiShield />}
+          label="User ID"
+          value={userId}
+        />
       </motion.div>
     </motion.div>
   );

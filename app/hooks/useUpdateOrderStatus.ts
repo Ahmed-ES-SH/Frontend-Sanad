@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useState } from "react";
 import { updateOrderStatus } from "../actions/orderActions";
-import { UseCreateOrderState } from "../types/order";
+import { UseCreateOrderState, OrderActionResult, UpdateOrderStatusResponse } from "../types/order";
 
 export function useUpdateOrderStatus() {
   const [state, setState] = useState<UseCreateOrderState>({
@@ -9,7 +9,11 @@ export function useUpdateOrderStatus() {
     error: null,
   });
 
-  const execute = useCallback(async (id: string, status: string) => {
+  const execute = useCallback(async (
+    id: string,
+    status: string,
+    onSuccess?: () => void
+  ): Promise<OrderActionResult<UpdateOrderStatusResponse>> => {
     setState({ isLoading: true, error: null });
 
     const result = await updateOrderStatus(id, status);
@@ -18,6 +22,7 @@ export function useUpdateOrderStatus() {
       setState({ isLoading: false, error: result.message });
     } else {
       setState({ isLoading: false, error: null });
+      onSuccess?.();
     }
 
     return result;

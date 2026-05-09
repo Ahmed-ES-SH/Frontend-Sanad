@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ContactListResponse, ContactQueryParams } from "@/app/types/contact";
+import {
+  ContactListResponse,
+  ContactQueryParams,
+  ContactStatsResponse,
+} from "@/app/types/contact";
 import { MessagesTable } from "./MessagesTable";
 import { Filters } from "./Filters";
 import { StatsCards } from "./StatsCards";
@@ -18,11 +22,13 @@ import { useAppQuery } from "@/app/hooks/useAppQuery";
 interface ContactMessagesContentProps {
   initialData: ContactListResponse;
   initialParams: ContactQueryParams;
+  statsData: ContactStatsResponse;
 }
 
 export function ContactMessagesContent({
   initialData,
   initialParams,
+  statsData,
 }: ContactMessagesContentProps) {
   const [params, setParams] = useState<ContactQueryParams>(initialParams);
 
@@ -108,9 +114,9 @@ export function ContactMessagesContent({
   return (
     <>
       <StatsCards
-        total={stats.total}
-        unread={stats.unread}
-        replied={stats.replied}
+        total={statsData.total}
+        unread={statsData.unread}
+        replied={statsData.read}
         currentPageCount={stats.currentPageCount}
       />
 

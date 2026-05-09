@@ -1202,7 +1202,7 @@
       "avgResponseTime": "متوسط وقت الرد",
       "satisfactionRate": "معدل الرضا",
       "excellent": "ممتاز",
-      "replied": "تم الرد"
+      "readed": "مقروءة"
     },
     "Filters": {
       "searchPlaceholder": "تصفية بالكلمة المفتاحية...",
@@ -1970,7 +1970,7 @@
     "serviceOverview": "نظرة عامة على الخدمة",
     "customerEntity": "كيان العميل",
     "viewProfile": "عرض الملف الشخصي",
-    "subscriptionDetails": "تفاصيل الاشتراك",
+    "orderProcessDetails": "تفاصيل العملية",
     "totalPayable": "المبلغ الإجمالي",
     "transactionId": "معرف المعاملة",
     "paymentStatus": "حالة الدفع",

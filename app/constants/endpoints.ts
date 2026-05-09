@@ -75,6 +75,7 @@ export const BLOG_ENDPOINTS = {
 export const CONTACT_ENDPOINTS = {
   SUBMIT: "/api/contact",
   ADMIN_LIST: "/api/admin/contact",
+  ADMIN_STATS: "/api/admin/contact/stats",
   ADMIN_GET: (id: string) => `/api/admin/contact/${id}`,
   ADMIN_MARK_READ: (id: string) => `/api/admin/contact/${id}/read`,
   ADMIN_MARK_REPLIED: (id: string) => `/api/admin/contact/${id}/reply`,
@@ -86,6 +87,7 @@ export const PAYMENTS_ENDPOINTS = {
   GET_BY_ID: (id: string) => `/api/payments/${id}`,
   USER_LIST: "/api/payments",
   ADMIN_LIST: "/api/admin/payments",
+  ADMIN_STATS: "/api/admin/payments/stats",
   ADMIN_GET: (id: string) => `/api/admin/payments/${id}`,
   ADMIN_REFUND: (id: string) => `/api/admin/payments/${id}/refund`,
 } as const;

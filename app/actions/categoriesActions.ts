@@ -99,8 +99,6 @@ export async function deleteCategory(id: string): Promise<{
     defaultErrorMessage: "Failed to delete category",
   });
 
-  console.log(res);
-
   if (res.success) {
     revalidateTag(CATEGORY_CACHE_TAG, {});
   }

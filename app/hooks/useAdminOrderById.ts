@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AdminOrder } from "../types/order";
 import { getAdminOrderById } from "../actions/orderActions";
 
@@ -7,6 +7,7 @@ export function useAdminOrderById(orderId: string | null) {
   const [order, setOrder] = useState<AdminOrder | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const fetchOrder = useCallback(async (id: string) => {
     setIsLoading(true);
@@ -16,6 +17,7 @@ export function useAdminOrderById(orderId: string | null) {
 
     if (result.success && result.data) {
       setOrder(result.data);
+      setIsInitialLoad(false);
     } else {
       setError(result.message);
     }
@@ -24,17 +26,17 @@ export function useAdminOrderById(orderId: string | null) {
     return result;
   }, []);
 
-  // Fetch order on mount if orderId is provided
-  useState(() => {
+  useEffect(() => {
     if (orderId) {
       fetchOrder(orderId);
     }
-  });
+  }, [orderId, fetchOrder]);
 
   return {
     order,
     isLoading,
     error,
+    isInitialLoad,
     fetchOrder,
   };
 }

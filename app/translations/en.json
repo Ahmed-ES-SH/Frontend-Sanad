@@ -993,7 +993,7 @@
       "totalViews": "Total Views",
       "avgReadingTime": "Avg. Reading Time",
       "newComments": "New Comments",
-      "replied": "Replied"
+      "readed": "Readed"
     },
     "QuickActions": {
       "createNewPost": "Create New Post",
@@ -2018,7 +2018,7 @@
     "serviceOverview": "Service Overview",
     "customerEntity": "Customer Entity",
     "viewProfile": "View Profile",
-    "subscriptionDetails": "Subscription Details",
+    "orderProcessDetails": "Order Process Details",
     "totalPayable": "Total Payable",
     "transactionId": "Transaction ID",
     "paymentStatus": "Payment Status",

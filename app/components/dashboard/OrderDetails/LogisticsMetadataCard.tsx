@@ -5,15 +5,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FiTruck, FiClock, FiAlertCircle } from "react-icons/fi";
+import { FiClock, FiCalendar, FiFileText } from "react-icons/fi";
 
 import { MetaItem } from "./MetaItem";
 import { useTranslation } from "@/app/hooks/useTranslation";
+import type { AdminOrder } from "@/app/types/order";
 
 interface LogisticsMetadataCardProps {
-  fulfilment?: string;
-  slaDeadline?: string;
-  priority?: string;
+  order?: AdminOrder;
 }
 
 // Animation variants
@@ -30,18 +29,26 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-const defaultValues = {
-  fulfilment: "Not Applicable",
-  slaDeadline: "Oct 30, 2023",
-  priority: "High Response",
-};
+function formatDate(dateString: string): string {
+  if (!dateString) return "—";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export function LogisticsMetadataCard({
-  fulfilment = defaultValues.fulfilment,
-  slaDeadline = defaultValues.slaDeadline,
-  priority = defaultValues.priority,
+  order,
 }: LogisticsMetadataCardProps) {
   const t = useTranslation("orderDetails");
+
+  const createdAt = order?.createdAt ? formatDate(order.createdAt) : "—";
+  const updatedAt = order?.updatedAt ? formatDate(order.updatedAt) : "—";
+  const notes = order?.notes || "—";
 
   return (
     <motion.div
@@ -57,16 +64,20 @@ export function LogisticsMetadataCard({
         {t.logisticsContext}
       </motion.h3>
       <motion.div variants={item} className="space-y-1">
-        <MetaItem icon={<FiTruck />} label={t.fulfilment} value={fulfilment} />
         <MetaItem
-          icon={<FiClock />}
-          label={t.slaDeadline}
-          value={slaDeadline}
+          icon={<FiCalendar />}
+          label="Created"
+          value={createdAt}
         />
         <MetaItem
-          icon={<FiAlertCircle />}
-          label={t.priority}
-          value={priority}
+          icon={<FiClock />}
+          label="Last Updated"
+          value={updatedAt}
+        />
+        <MetaItem
+          icon={<FiFileText />}
+          label="Notes"
+          value={notes}
         />
       </motion.div>
     </motion.div>

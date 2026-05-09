@@ -12,6 +12,7 @@ import {
   MarkRepliedResponse,
   DeleteResponse,
   ContactQueryParams,
+  ContactStatsResponse,
 } from "@/app/types/contact";
 import { globalRequest } from "../helpers/globalRequest";
 
@@ -102,6 +103,36 @@ export async function fetchContactMessages(
     success: true,
     data: res.data.data,
     meta: res.data.meta,
+  };
+}
+
+/* =========================================================
+   ADMIN: GET CONTACT STATS
+========================================================= */
+
+export async function fetchContactStats(): Promise<{
+  success: boolean;
+  data?: ContactStatsResponse;
+  message?: string;
+}> {
+  const res = await globalRequest<never, ContactStatsResponse>({
+    endpoint: CONTACT_ENDPOINTS.ADMIN_STATS,
+
+    method: "GET",
+
+    defaultErrorMessage: "Failed to fetch contact messages",
+  });
+
+  if (!res.success || !res.data) {
+    return {
+      success: false,
+      message: res.message,
+    };
+  }
+
+  return {
+    success: true,
+    data: res.data,
   };
 }
 

@@ -56,8 +56,8 @@ export default function ClientUsers({
   // Build query string with filters and pagination
   const queryParams = useMemo(() => {
     const params = new URLSearchParams();
-    params.set("page", currentPage.toString());
-    params.set("limit", perPage.toString());
+    params.set("page", currentPage?.toString() ?? "1");
+    params.set("limit", perPage?.toString() ?? "10");
 
     if (filters.role && filters.role !== "all") {
       params.set("role", filters.role);

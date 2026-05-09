@@ -5,12 +5,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  FiFileText,
-  FiShield,
-  FiCheckCircle,
-  FiAlertCircle,
-} from "react-icons/fi";
+import { FiFileText, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 
 import Img from "@/app/components/global/Img";
 import { StatusBadge } from "./StatusBadge";
@@ -64,16 +59,26 @@ export function ServiceOverviewCard({ order }: ServiceOverviewCardProps) {
               {t.customerEntity}
             </label>
             <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-50 border border-surface-100">
-              <Img
-                alt={order.user.name || ""}
-                src={order.user.avatar || ""}
-                className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
-              />
+              {order.user?.avatar ? (
+                <Img
+                  alt={order.user.name || "User"}
+                  src={order.user.avatar}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-full bg-surface-200 flex items-center justify-center">
+                  <span className="text-surface-500 text-lg">
+                    {order.user?.name?.charAt(0) || "?"}
+                  </span>
+                </div>
+              )}
               <div>
                 <p className="heading-sm text-surface-900 leading-tight">
-                  {order.user.name}
+                  {order.user?.name || "Unknown User"}
                 </p>
-                <p className="body-sm text-surface-500">{order.user.email}</p>
+                <p className="body-sm text-surface-500">
+                  {order.user?.email || "—"}
+                </p>
                 <button className="text-primary caption font-bold mt-1 hover:underline">
                   {t.viewProfile}
                 </button>
@@ -84,16 +89,12 @@ export function ServiceOverviewCard({ order }: ServiceOverviewCardProps) {
           {/* Service Info */}
           <div>
             <label className="caption-xs text-surface-400 uppercase tracking-widest mb-4 block">
-              {t.subscriptionDetails}
+              {t.orderProcessDetails}
             </label>
             <div className="space-y-4">
               <div>
                 <p className="heading-md text-surface-900 font-display">
                   {order.service.title}
-                </p>
-                <p className="body-sm text-primary font-medium flex items-center gap-1.5 mt-1">
-                  <FiShield className="w-3.5 h-3.5" />
-                  {"subscriptionType"}
                 </p>
               </div>
             </div>
@@ -123,16 +124,22 @@ export function ServiceOverviewCard({ order }: ServiceOverviewCardProps) {
                   {t.transactionId}
                 </span>
                 <span className="body-sm font-mono text-surface-900 bg-surface-100 px-2 py-0.5 rounded">
-                  {order.paymentId}
+                  {order.paymentId || "—"}
                 </span>
               </div>
               <div className="flex justify-between items-center px-2">
                 <span className="body-sm text-surface-500">
                   {t.paymentStatus}
                 </span>
-                <span className="body-sm font-bold text-accent-emerald flex items-center gap-1.5">
-                  <FiCheckCircle /> {t.verified}
-                </span>
+                {order.payment ? (
+                  <span className="body-sm font-bold text-accent-emerald flex items-center gap-1.5">
+                    <FiCheckCircle /> {order.payment.status}
+                  </span>
+                ) : (
+                  <span className="body-sm text-surface-400 flex items-center gap-1.5">
+                    No payment
+                  </span>
+                )}
               </div>
             </div>
           </div>

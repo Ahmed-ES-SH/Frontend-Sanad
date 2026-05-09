@@ -8,6 +8,7 @@
 
 export type NotificationType =
   | "ORDER_UPDATED"
+  | "ORDER_CREATED"
   | "PAYMENT_SUCCESS"
   | "PAYMENT_FAILED"
   | "SYSTEM"
@@ -114,15 +115,40 @@ export interface NotificationQueryParams {
 }
 
 // ============================================================================
-// FORM DATA - Client-side form state
+// SEND NOTIFICATION DTO - Request body for POST /api/admin/notifications/send
 // ============================================================================
 
-export interface SendNotificationFormData {
-  userId: number;
+export interface SendNotificationDto {
+  ids: number[];
   type: NotificationType;
   title: string;
   message: string;
   data?: Record<string, unknown>;
+}
+
+// ============================================================================
+// SEND NOTIFICATION RESPONSE - Backend response from POST admin/notifications/send
+// ============================================================================
+
+export interface SendNotificationResponse {
+  success: boolean;
+  message: string;
+  sent: number;
+  failed: number;
+  failedIds: number[];
+}
+
+// ============================================================================
+// FORM DATA - Client-side form state
+// ============================================================================
+
+/** @deprecated Use SendNotificationDto instead — this type lacks the `ids` array. */
+export interface SendNotificationFormData {
+  type: NotificationType;
+  title: string;
+  message: string;
+  data?: Record<string, unknown>;
+  userId?: number;
 }
 
 export interface BroadcastNotificationFormData {
@@ -167,6 +193,19 @@ export interface NotificationState {
     limit: number;
     total: number;
   };
+}
+
+// ============================================================================
+// FORM TYPES - Shared types for notification form components
+// ============================================================================
+
+export type UserMode = "single" | "multiple";
+
+export interface SelectedUserInfo {
+  id: number;
+  name: string;
+  email: string;
+  avatar?: string;
 }
 
 // ============================================================================

@@ -1,3 +1,5 @@
+import { PaginationMeta } from "./global";
+
 export type UserRole = "admin" | "user";
 
 // ============================================================================
@@ -69,10 +71,7 @@ export interface UserListResponse {
 // Paginated response from /api/user endpoint
 export interface UsersPaginatedResponse {
   data: User[];
-  total: number;
-  page: number;
-  perPage: number;
-  lastPage: number;
+  meta: PaginationMeta;
 }
 
 export interface UserResponse {

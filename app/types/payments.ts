@@ -3,6 +3,7 @@
  */
 
 import { ReactNode } from "react";
+import { PaginationMeta } from "./global";
 
 export type PaymentStatus =
   | "pending"
@@ -27,12 +28,16 @@ export interface PaymentResponseDto {
 
 export interface PaginatedPaymentsResponse {
   data: PaymentResponseDto[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
+  meta: PaginationMeta;
+}
+
+export interface PaymentStatistics {
+  total: number;
+  succeeded: number;
+  pending: number;
+  refunded: number;
+  failed: number;
+  partiallyRefunded: number;
 }
 
 export interface PaymentFilterDto {

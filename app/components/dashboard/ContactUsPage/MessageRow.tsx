@@ -13,15 +13,19 @@ interface MessageRowProps {
   message: ContactMessage;
   locale: Locale;
   onAction: (id: string, action: MessageAction) => void;
+  onRowClick: (message: ContactMessage) => void;
 }
 
-export function MessageRow({ message, locale, onAction }: MessageRowProps) {
+export function MessageRow({ message, locale, onAction, onRowClick }: MessageRowProps) {
   const isReplied = useMemo(() => !!message.repliedAt, [message.repliedAt]);
   const isUnread = useMemo(() => !message.isRead, [message.isRead]);
   const formattedDate = useMemo(() => formatDate(message.createdAt, locale), [message.createdAt, locale]);
 
   return (
-    <tr className="hover:bg-stone-50/40 transition-colors group">
+    <tr 
+      className="hover:bg-stone-50/40 transition-colors group cursor-pointer"
+      onClick={() => onRowClick(message)}
+    >
       <td className="px-6 py-5">
         <SenderCell message={message} />
       </td>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "@/app/hooks/useTranslation";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import type { PaginationMeta } from "@/app/types/global";
 
 interface OrdersPaginationProps {
@@ -10,59 +10,36 @@ interface OrdersPaginationProps {
 }
 
 export function OrdersPagination({ meta, currentPage, onPageChange }: OrdersPaginationProps) {
-  const pageLabel = useTranslation("ordersList.paginationPage");
-  const ofLabel = useTranslation("ordersList.paginationOf");
-
   if (!meta || meta.total <= 1) {
     return null;
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 pt-4">
+    <nav className="flex items-center justify-center gap-3 pt-6" aria-label="Pagination">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label="Previous page"
+        className="group flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
       >
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
+        <FiChevronLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
       </button>
 
-      <span className="text-sm text-gray-600">
-        {pageLabel} {currentPage} {ofLabel} {meta.total}
+      <span className="min-w-[120px] text-center text-sm font-medium text-gray-600 tabular-nums">
+        <span className="text-gray-900">{currentPage}</span>
+        <span className="mx-1.5 text-gray-400">/</span>
+        <span>{meta.total}</span>
       </span>
 
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === meta.total}
-        className="p-2 text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label="Next page"
+        className="group flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
       >
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
+        <FiChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
       </button>
-    </div>
+    </nav>
   );
 }
 

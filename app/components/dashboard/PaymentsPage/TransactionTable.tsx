@@ -2,6 +2,8 @@ import React from "react";
 import { FiEye, FiUser } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { PaymentResponseDto } from "@/app/types/payments";
+import { PaginationMeta } from "@/app/types/global";
+import TransactionPagination from "./TransactionPagination";
 
 interface TransactionTableProps {
   payments: PaymentResponseDto[] | null;
@@ -9,12 +11,7 @@ interface TransactionTableProps {
   error: unknown;
   onRowClick: (paymentId: string) => void;
   onRetry: () => void;
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  } | null;
+  meta: PaginationMeta | null;
   onPageChange: (newPage: number) => void;
 }
 
@@ -175,64 +172,8 @@ export default function TransactionTable({
       </div>
 
       {/* Pagination Controls */}
-      {meta && meta.totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-stone-200 flex items-center justify-between bg-stone-50">
-          <div className="text-sm text-stone-500">
-            Showing{" "}
-            <span className="font-medium text-stone-900">
-              {(meta.page - 1) * meta.limit + 1}
-            </span>{" "}
-            to{" "}
-            <span className="font-medium text-stone-900">
-              {Math.min(meta.page * meta.limit, meta.total)}
-            </span>{" "}
-            of <span className="font-medium text-stone-900">{meta.total}</span>{" "}
-            results
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => onPageChange(meta.page - 1)}
-              disabled={meta.page <= 1}
-              className="px-3 py-1.5 text-sm font-medium text-stone-700 bg-white border border-stone-300 rounded-lg hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Previous
-            </button>
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(5, meta.totalPages) }).map(
-                (_, idx) => {
-                  let pageNum = idx + 1;
-                  if (meta.totalPages > 5 && meta.page > 3) {
-                    pageNum = meta.page - 2 + idx;
-                    if (pageNum > meta.totalPages) {
-                      pageNum = meta.totalPages - (4 - idx);
-                    }
-                  }
-
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => onPageChange(pageNum)}
-                      className={`w-8 h-8 flex items-center justify-center text-sm font-medium rounded-lg transition-colors ${
-                        meta.page === pageNum
-                          ? "bg-orange-600 text-white border-orange-600"
-                          : "bg-white text-stone-700 border border-stone-300 hover:bg-stone-50"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                },
-              )}
-            </div>
-            <button
-              onClick={() => onPageChange(meta.page + 1)}
-              disabled={meta.page >= meta.totalPages}
-              className="px-3 py-1.5 text-sm font-medium text-stone-700 bg-white border border-stone-300 rounded-lg hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-          </div>
-        </div>
+      {meta && meta.lastPage > 1 && (
+        <TransactionPagination meta={meta} onPageChange={onPageChange} />
       )}
     </div>
   );

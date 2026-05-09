@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { AdminOrder } from "@/app/types/order";
 import { useAdminOrdersWithState } from "@/app/hooks/useAdminOrdersWithState";
 import { useTranslation } from "@/app/hooks/useTranslation";
 
@@ -121,7 +120,15 @@ export function OrdersTable({
       </div>
 
       {/* Pagination */}
-      {meta && <OrdersPagination meta={meta} filters={filters} isFetching={isFetching} onPageChange={setPage} onLimitChange={setLimit} />}
+      {meta && (
+        <OrdersPagination
+          meta={meta}
+          filters={filters}
+          isFetching={isFetching}
+          onPageChange={setPage}
+          onLimitChange={setLimit}
+        />
+      )}
     </div>
   );
 }

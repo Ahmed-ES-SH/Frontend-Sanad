@@ -1,10 +1,9 @@
 "use client";
 
-import { FiSearch, FiMenu } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import DropdownSettings from "./DropdownSettings";
 import useVariablesStore from "@/app/store/VariablesSlice";
-import { useTranslation } from "@/app/hooks/useTranslation";
 import LocaleLink from "../../global/LocaleLink";
 import UserButton from "../../global/_navbar/UserButton";
 import NotificationBell from "../../website/notifications/NotificationBell";
@@ -52,10 +51,8 @@ function buildBreadcrumb(pathname: string, locale: string) {
 
 export default function TopNavBar() {
   const { locale, setIsSidebarOpen } = useVariablesStore();
-  const t = useTranslation("DashboardPage.TopNavBar");
   const pathname = usePathname();
   const crumbs = buildBreadcrumb(pathname, locale);
-  const isRTL = locale === "ar";
 
   if (!pathname.includes(`/${locale}/dashboard`)) {
     return null;
@@ -105,20 +102,6 @@ export default function TopNavBar() {
 
       {/* Right Actions */}
       <div className="flex items-center gap-3 sm:gap-6">
-        {/* Search */}
-        <div className="relative hidden lg:block">
-          <FiSearch
-            className={`absolute ${isRTL ? "right-3" : "left-3"} top-1/2 -translate-y-1/2 text-stone-400`}
-            size={16}
-          />
-          <input
-            className={`${isRTL ? "pr-10 pl-4" : "pl-10 pr-4"} py-2 bg-stone-100 border-stone-200/50 border rounded-xl text-xs font-medium focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all w-48 xl:w-64 placeholder:text-stone-400`}
-            placeholder={t.searchPlaceholder}
-            type="text"
-            aria-label={t.searchPlaceholder}
-          />
-        </div>
-
         {/* Actions */}
         <div className="flex items-center gap-1.5 sm:gap-3">
           <div className="flex items-center gap-1 sm:gap-2 mr-1 sm:mr-3 border-r border-stone-200/60 pr-1 sm:pr-3">

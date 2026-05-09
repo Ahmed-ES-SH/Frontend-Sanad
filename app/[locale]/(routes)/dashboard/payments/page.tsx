@@ -1,5 +1,8 @@
-import { getInitialPayments } from "@/app/actions/paymentsActions";
-import PaymentsClient from "./PaymentsClient";
+import {
+  getInitialPayments,
+  getPaymentStats,
+} from "@/app/actions/paymentsActions";
+import PaymentsClient from "../../../../components/dashboard/PaymentsPage/PaymentsClient";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -8,15 +11,20 @@ export const metadata: Metadata = {
 };
 
 export default async function PaymentsPage() {
-  // First fetch will be done on the server side
-  const { data: initialData, success } = await getInitialPayments({
-    page: 1,
-    limit: 10,
-  });
+  const [paymentsResponse, paymentStats] = await Promise.all([
+    getInitialPayments({
+      page: 1,
+      limit: 10,
+    }),
+    getPaymentStats(),
+  ]);
+
+  const { data: initialData, success } = paymentsResponse;
 
   return (
-    <PaymentsClient 
-      initialData={success && initialData ? initialData : null} 
+    <PaymentsClient
+      initialData={success && initialData ? initialData : null}
+      paymentStats={paymentStats?.data ?? null}
     />
   );
 }

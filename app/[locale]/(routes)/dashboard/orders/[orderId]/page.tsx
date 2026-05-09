@@ -41,8 +41,12 @@ export default function OrderDetailsPage() {
     fetchState,
     submitState,
     updateText,
+    statusSelect,
+    isUpdatingStatus,
     setUpdateText,
+    setStatusSelect,
     handlePostUpdate,
+    handleStatusUpdate,
   } = useOrderDetails(orderId);
 
   // Loading state
@@ -61,15 +65,21 @@ export default function OrderDetailsPage() {
       variants={container}
       initial="hidden"
       animate="show"
-      className="page-bg min-h-screen pb-20"
+      className="min-h-[120vh] pb-20 xl:p-3 p-1"
     >
       {/* Page Header */}
-      <OrderHeader order={order} />
+      <OrderHeader
+        order={order}
+        statusSelect={statusSelect}
+        onStatusChange={setStatusSelect}
+        onStatusUpdate={handleStatusUpdate}
+        isUpdatingStatus={isUpdatingStatus}
+      />
 
       {/* Progress Visualizer */}
       <OrderProgressCard currentStatus={order.status} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 h-full gap-8">
         {/* Main Details Column */}
         <div className="lg:col-span-2 space-y-8">
           {/* Service & Customer Section */}
@@ -82,14 +92,17 @@ export default function OrderDetailsPage() {
             variants={item}
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-            <AccountMetadataCard />
-            <LogisticsMetadataCard />
+            <AccountMetadataCard order={order} />
+            <LogisticsMetadataCard order={order} />
           </motion.div>
         </div>
 
         {/* Timeline Sidebar */}
-        <div className="space-y-8">
-          <motion.div variants={item} className="space-y-8">
+        <div className="space-y-8 border border-gray-200 rounded-lg shadow-md page-bg sticky top-24 right-0 h-fit xl:max-h-[70vh]">
+          <motion.div
+            variants={item}
+            className="space-y-8 overflow-y-auto h-full"
+          >
             <TimelineSidebar
               timeline={timeline}
               submitState={submitState}

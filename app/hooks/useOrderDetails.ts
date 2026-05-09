@@ -1,11 +1,15 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 // ============================================================================
 // USE ORDER DETAILS HOOK - State management for order details page
 // ============================================================================
 
 import { useEffect, useState, useCallback } from "react";
 
-import type { TimelineEntry } from "../types/order";
+import type { TimelineEntry, OrderStatus } from "../types/order";
 import type { AdminOrder } from "../types/order";
+import { useAdminOrderById } from "./useAdminOrderById";
+import { useUpdateOrderStatus } from "./useUpdateOrderStatus";
+import { useAddOrderUpdate } from "./useAddOrderUpdate";
 
 // ============================================================================
 // TYPES
@@ -19,123 +23,108 @@ interface SubmissionError {
 }
 
 interface UseOrderDetailsReturn {
-  // State
   order: AdminOrder | null;
   timeline: TimelineEntry[];
   fetchState: FetchState;
   submitState: SubmitState;
   submissionError: SubmissionError | null;
   updateText: string;
-  // Actions
+  statusSelect: OrderStatus | "";
+  isUpdatingStatus: boolean;
   setUpdateText: (text: string) => void;
+  setStatusSelect: (status: OrderStatus | "") => void;
   handlePostUpdate: () => Promise<void>;
+  handleStatusUpdate: () => Promise<void>;
   refreshOrder: () => Promise<void>;
 }
 
 // ============================================================================
-// MOCK DATA - Replace with actual API calls
+// HELPER FUNCTIONS
 // ============================================================================
 
-const mockOrderDetails: AdminOrder = {
-  id: "#ORD-8821",
-  userId: 1,
-  serviceId: "svc-1",
-  service: {
-    id: "svc-1",
-    title: "Enterprise Maintenance Suite",
-    slug: "enterprise-maintenance",
-    shortDescription: "Comprehensive maintenance solution",
-    iconUrl: "",
-    coverImageUrl: "",
-    basePrice: 250,
-    isPublished: true,
-    order: 1,
-  },
-  paymentId: "PAY-7721-X992-B82",
-  status: "in_progress",
-  amount: 250,
-  currency: "USD",
-  notes: "Client requested priority handling for the first month setup.",
-  updates: [],
-  createdAt: "Oct 24, 2023 at 02:45 PM",
-  updatedAt: "Oct 25, 2023 at 10:12 AM",
-  user: {
-    id: 1,
-    email: "sarah.j@example.com",
-    name: "Sarah Jenkins",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-    role: "user",
-    isEmailVerified: true,
-    createdAt: "",
-    updatedAt: "",
-  },
-  payment: {
-    id: "pay-1",
-    stripePaymentIntentId: "pi_123",
-    amount: 250,
-    currency: "USD",
-    status: "succeeded",
-    description: "Payment for Enterprise Maintenance Suite",
-    metadata: { orderId: "#ORD-8821" },
-    createdAt: "",
-    updatedAt: "",
-  },
-};
+function formatDateTime(dateString: string): string {
+  if (!dateString) return "—";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
-const mockTimeline: TimelineEntry[] = [
-  {
-    id: "update-1",
-    author: "Admin Sanad",
-    authorAvatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
-    timestamp: "TODAY, 10:12 AM",
-    content:
-      'Verified payment receipt and moved order to "Processing" state. Notified customer via email.',
-  },
-  {
-    id: "update-2",
-    author: "System Activity",
-    timestamp: "OCT 24, 02:45 PM",
-    content:
-      "Order created successfully through the customer portal. Payment status: Pending.",
-    isSystem: true,
-  },
-];
+function transformOrderUpdatesToTimeline(
+  updates: AdminOrder["updates"],
+): TimelineEntry[] {
+  if (!updates || updates.length === 0) return [];
+
+  return updates.map((update) => ({
+    id: update.id,
+    author: update.author === "admin" ? "Admin" : "System",
+    authorAvatar: undefined,
+    timestamp: formatDateTime(update.createdAt),
+    content: update.content,
+    isSystem: update.author === "system",
+  }));
+}
 
 // ============================================================================
 // HOOK
 // ============================================================================
 
 export function useOrderDetails(orderId: string): UseOrderDetailsReturn {
-  const [order, setOrder] = useState<AdminOrder | null>(null);
-  const [timeline, setTimeline] = useState<TimelineEntry[]>([]);
+  const {
+    order,
+    isLoading: isFetchingOrder,
+    error: fetchError,
+    isInitialLoad,
+    fetchOrder,
+  } = useAdminOrderById(orderId);
+
+  const { isLoading: isUpdatingStatus, updateStatus } = useUpdateOrderStatus();
+
+  const { isLoading: isAddingUpdate, addUpdate } = useAddOrderUpdate();
+
   const [fetchState, setFetchState] = useState<FetchState>("loading");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
-  const [submissionError, setSubmissionError] = useState<SubmissionError | null>(
-    null
-  );
+  const [submissionError, setSubmissionError] =
+    useState<SubmissionError | null>(null);
   const [updateText, setUpdateText] = useState("");
+  const [statusSelect, setStatusSelect] = useState<OrderStatus | "">("");
 
-  const fetchOrder = useCallback(async () => {
-    try {
-      setFetchState("loading");
-      // TODO: Replace with actual API call
-      // const response = await fetch(`/api/orders/${orderId}`);
-      // const data = await response.json();
-      
-      await new Promise((r) => setTimeout(r, 800)); // Simulated delay
-      setOrder(mockOrderDetails as AdminOrder);
-      setTimeline(mockTimeline);
-      setFetchState("success");
-    } catch {
-      setFetchState("error");
-    }
-  }, [orderId]);
-
+  // Handle order fetching state
   useEffect(() => {
-    fetchOrder();
-  }, [fetchOrder]);
+    if (isFetchingOrder && isInitialLoad) {
+      setFetchState("loading");
+    } else if (fetchError) {
+      setFetchState("error");
+    } else if (order) {
+      setFetchState("success");
+    }
+  }, [isFetchingOrder, isInitialLoad, fetchError, order]);
+
+  // Sync status select with order status
+  useEffect(() => {
+    if (order?.status) {
+      setStatusSelect(order.status as OrderStatus);
+    }
+  }, [order?.status]);
+
+  const refreshOrder = useCallback(async () => {
+    await fetchOrder(orderId);
+  }, [orderId, fetchOrder]);
+
+  const handleStatusUpdate = useCallback(async () => {
+    if (!statusSelect || statusSelect === order?.status) return;
+
+    const result = await updateStatus(orderId, statusSelect, () => {
+      refreshOrder();
+    });
+
+    if (!result.success) {
+      setSubmissionError({ message: result.message });
+    }
+  }, [orderId, statusSelect, order?.status, updateStatus, refreshOrder]);
 
   const handlePostUpdate = useCallback(async () => {
     if (!updateText.trim()) return;
@@ -143,24 +132,25 @@ export function useOrderDetails(orderId: string): UseOrderDetailsReturn {
     setSubmitState("submitting");
     setSubmissionError(null);
 
-    try {
-      // TODO: Replace with actual API call
-      // await fetch(`/api/orders/${orderId}/updates`, {
-      //   method: 'POST',
-      //   body: JSON.stringify({ content: updateText }),
-      // });
-      
-      await new Promise((r) => setTimeout(r, 600)); // Simulated delay
+    const result = await addUpdate(orderId, updateText.trim(), () => {
+      refreshOrder();
+    });
+
+    if (result.success) {
       setSubmitState("submitted");
       setUpdateText("");
       setTimeout(() => setSubmitState("idle"), 3000);
-    } catch {
+    } else {
       setSubmitState("error");
       setSubmissionError({
-        message: "Failed to post update. Please try again.",
+        message: result.message || "Failed to post update. Please try again.",
       });
     }
-  }, [updateText, orderId]);
+  }, [orderId, updateText, addUpdate, refreshOrder]);
+
+  const timeline = order?.updates
+    ? transformOrderUpdatesToTimeline(order.updates)
+    : [];
 
   return {
     order,
@@ -169,8 +159,12 @@ export function useOrderDetails(orderId: string): UseOrderDetailsReturn {
     submitState,
     submissionError,
     updateText,
+    statusSelect,
+    isUpdatingStatus: isUpdatingStatus || isAddingUpdate,
     setUpdateText,
+    setStatusSelect,
     handlePostUpdate,
-    refreshOrder: fetchOrder,
+    handleStatusUpdate,
+    refreshOrder,
   };
 }

@@ -1,6 +1,13 @@
-import { fetchContactMessages } from "@/app/actions/contactActions";
+import {
+  fetchContactMessages,
+  fetchContactStats,
+} from "@/app/actions/contactActions";
 import { ContactMessagesContent } from "@/app/components/dashboard/ContactUsPage/ContactMessagesContent";
-import { ContactListResponse, ContactQueryParams } from "@/app/types/contact";
+import {
+  ContactListResponse,
+  ContactQueryParams,
+  ContactStatsResponse,
+} from "@/app/types/contact";
 
 interface ContactUsPageProps {
   searchParams: Promise<{
@@ -39,6 +46,8 @@ export default async function ContactUsPage({
 
   const response = await fetchContactMessages(initialParams);
 
+  const { data: statsData } = await fetchContactStats();
+
   const initialData =
     response.success && response.data
       ? {
@@ -64,6 +73,7 @@ export default async function ContactUsPage({
     <main className="pt-12 pb-12 px-8 min-h-screen bg-stone-50 text-stone-900">
       <ContactMessagesContent
         initialData={initialData as ContactListResponse}
+        statsData={statsData as ContactStatsResponse}
         initialParams={initialParams}
       />
     </main>
