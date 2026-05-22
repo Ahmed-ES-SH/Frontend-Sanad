@@ -2,7 +2,7 @@ import { getTranslations } from "@/app/helpers/getTranslations";
 import { Locale } from "@/app/types/global";
 import { Metadata } from "next";
 import { FiBell } from "react-icons/fi";
-import { AdminSendNotificationForm } from "./_components/AdminSendNotificationForm";
+import { AdminSendNotificationForm } from "../../../../components/dashboard/notifications/AdminSendNotificationForm";
 
 interface Props {
   params: Promise<{ locale: Locale }>;

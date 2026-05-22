@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { sendNotificationAction } from "../actions/sendNotification";
+import { sendNotificationAction } from "../../actions/sendNotification";
 import type {
   NotificationType,
   SendNotificationResponse,
@@ -20,7 +20,9 @@ export function useSendNotification() {
   const [result, setResult] = useState<SendNotificationResponse | null>(null);
 
   const submit = useCallback(
-    async (params: SendNotificationParams): Promise<SendNotificationResponse> => {
+    async (
+      params: SendNotificationParams,
+    ): Promise<SendNotificationResponse> => {
       setIsSubmitting(true);
       setResult(null);
 
@@ -31,8 +33,7 @@ export function useSendNotification() {
       } catch (error) {
         const errorResponse: SendNotificationResponse = {
           success: false,
-          message:
-            error instanceof Error ? error.message : "An error occurred",
+          message: error instanceof Error ? error.message : "An error occurred",
           sent: 0,
           failed: params.userIds.length,
           failedIds: [],

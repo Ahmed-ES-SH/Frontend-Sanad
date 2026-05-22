@@ -12,8 +12,8 @@ import {
   FiChevronUp,
 } from "react-icons/fi";
 import { SEND_NOTIFICATION_TYPES } from "@/app/constants/notifications";
-import { useSendNotification } from "../hooks/useSendNotification";
-import { useElapsedTimer } from "../hooks/useElapsedTimer";
+import { useSendNotification } from "../../../hooks/notifications/useSendNotification";
+import { useElapsedTimer } from "../../../hooks/notifications/useElapsedTimer";
 import { ResultBanner } from "./ResultBanner";
 import { UserSummaryBar } from "./UserSummaryBar";
 import { CloseConfirmDialog } from "./CloseConfirmDialog";

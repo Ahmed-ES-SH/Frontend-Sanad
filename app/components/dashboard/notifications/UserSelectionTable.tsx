@@ -49,9 +49,24 @@ export function UserSelectionTable({
     },
   });
 
-  const users = data?.data ?? [];
+  const users = useMemo(() => data?.data ?? [], [data?.data]);
   const total = data?.meta?.total ?? 0;
   const totalPages = data?.meta?.lastPage ?? 1;
+
+  // Fetch all user IDs for "select all" functionality
+  const { data: allIdsData, isLoading: isLoadingIds } = useAppQuery<
+    number[],
+    Error
+  >({
+    queryKey: ["users", "all-ids"],
+    endpoint: USER_ENDPOINTS.GET_ALL_IDS,
+    options: {
+      staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  });
+
+  const allUserIds = useMemo(() => allIdsData ?? [], [allIdsData]);
 
   // Notify parent of selected users info
   useEffect(() => {
@@ -99,19 +114,21 @@ export function UserSelectionTable({
 
   const handleSelectAll = useCallback(() => {
     if (mode === "single") return;
+    if (isLoadingIds || allUserIds.length === 0) return;
 
-    const allPageUserIds = users.map((u) => u.id);
-    const allSelected = allPageUserIds.every((id) =>
-      selectedUsers.includes(id),
-    );
+    // Use all user IDs (from all pages) instead of just current page
+    const idsToSelect = allUserIds;
+    const allSelected = idsToSelect.every((id) => selectedUsers.includes(id));
 
     if (allSelected) {
+      // Deselect all - remove all user IDs from selection
       onSelectionChange(
-        selectedUsers.filter((id) => !allPageUserIds.includes(id)),
+        selectedUsers.filter((id) => !idsToSelect.includes(id)),
       );
     } else {
+      // Select all - add all user IDs
       const newSelection = [...selectedUsers];
-      allPageUserIds.forEach((id) => {
+      idsToSelect.forEach((id) => {
         if (!newSelection.includes(id)) {
           if (!maxSelections || newSelection.length < maxSelections) {
             newSelection.push(id);
@@ -120,14 +137,24 @@ export function UserSelectionTable({
       });
       onSelectionChange(newSelection);
     }
-  }, [users, selectedUsers, onSelectionChange, mode, maxSelections]);
+  }, [
+    allUserIds,
+    selectedUsers,
+    onSelectionChange,
+    mode,
+    maxSelections,
+    isLoadingIds,
+  ]);
 
   const allPageSelected = useMemo(() => {
-    if (users.length === 0) return false;
-    return users.every((u) => selectedUsers.includes(u.id));
-  }, [users, selectedUsers]);
+    if (allUserIds.length === 0) return false;
+    // Check if ALL users are selected (not just current page)
+    return allUserIds.every((id) => selectedUsers.includes(id));
+  }, [allUserIds, selectedUsers]);
 
   const columnCount = mode === "multiple" ? 5 : 6;
+
+  console.log(allIdsData);
 
   return (
     <div className="space-y-4">
@@ -157,13 +184,21 @@ export function UserSelectionTable({
                 <tr>
                   {mode === "multiple" && (
                     <th className="px-6 py-4 w-12">
-                      <div className="flex items-center">
+                      <div className="flex flex-col gap-1">
                         <input
                           type="checkbox"
                           checked={allPageSelected}
                           onChange={handleSelectAll}
-                          className="w-5 h-5 rounded border-surface-300 text-primary focus:ring-primary/20 cursor-pointer"
+                          disabled={isLoadingIds || allUserIds.length === 0}
+                          className="w-5 h-5 rounded border-surface-300 text-primary focus:ring-primary/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         />
+                        {isLoadingIds ? (
+                          <FiLoader className="w-3 h-3 animate-spin text-surface-400" />
+                        ) : allUserIds.length > 0 ? (
+                          <span className="text-[10px] text-surface-400 whitespace-nowrap">
+                            Select all ({allUserIds.length})
+                          </span>
+                        ) : null}
                       </div>
                     </th>
                   )}

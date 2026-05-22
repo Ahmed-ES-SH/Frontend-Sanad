@@ -23,6 +23,9 @@ export const USER_ENDPOINTS = {
   ADMIN_CREATE: "/api/user",
   ADMIN_UPDATE: (id: string | number) => `/api/user/${id}`,
   ADMIN_DELETE: (id: string | number) => `/api/user/${id}`,
+
+  // Get all user IDs for bulk selection
+  GET_ALL_IDS: "/api/user/ids",
 } as const;
 
 export const CATEGORIES_ENDPOINTS = {
