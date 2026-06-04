@@ -121,7 +121,7 @@ export default function PortfolioSection({
         />
 
         {/* Projects Grid Display */}
-        <div className="relative min-h-[400px]">
+        <div className="relative min-h-100">
           {isLoading ? (
             <LoadingGrid />
           ) : displayedProjects.length === 0 ? (

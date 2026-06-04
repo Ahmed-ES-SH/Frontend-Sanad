@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Article } from "@/app/types/blog";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { FiPlus, FiX, FiChevronDown, FiSave, FiLoader } from "react-icons/fi";
+import { useTranslation } from "@/app/hooks/useTranslation";
 import { updateArticle, getCategories } from "@/app/actions/blogActions";
 import { Category } from "@/app/types/global";
 
@@ -18,19 +19,19 @@ interface CategoryWithId extends Category {
 
 export function CategoriesTags({ article }: CategoriesTagsProps) {
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
+  const t = useTranslation("ArticleDetails");
 
-  // State
   const [categories, setCategories] = useState<CategoryWithId[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
 
-  // UI State
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [showTagInput, setShowTagInput] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Load categories
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -43,79 +44,68 @@ export function CategoriesTags({ article }: CategoriesTagsProps) {
     loadCategories();
   }, []);
 
-  // Initialize from article
   useEffect(() => {
-    const handleCategory = (id: string) => {
-      setSelectedCategoryId(id);
-    };
-    handleCategory(article.categoryId || "");
-
-    const handTags = (tags: string[]) => {
-      setTags(tags.map((tag) => tag.trim()));
-    };
-
-    handTags(article.tags || []);
+    setSelectedCategoryId(article.categoryId || "");
+    setTags((article.tags || []).map((tag) => tag.trim()));
   }, [article.categoryId, article.tags]);
 
-  // Track changes
   useEffect(() => {
-    const handleChange = (state: boolean) => {
-      setHasChanges(state);
-    };
-
     const categoryChanged = selectedCategoryId !== (article.categoryId || "");
     const tagsChanged =
       JSON.stringify(tags) !== JSON.stringify(article.tags || []);
-    handleChange(categoryChanged || tagsChanged);
+    setHasChanges(categoryChanged || tagsChanged);
   }, [selectedCategoryId, tags, article.categoryId, article.tags]);
 
-  // Handle category change
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategoryId(e.target.value);
   };
 
-  // Handle add tag
   const handleAddTag = () => {
-    if (!newTag.trim() || tags.includes(newTag.toLowerCase().trim())) return;
-    setTags([...tags, newTag.toLowerCase().trim()]);
+    const trimmed = newTag.toLowerCase().trim();
+    if (!trimmed || tags.includes(trimmed)) return;
+    setTags([...tags, trimmed]);
     setNewTag("");
     setShowTagInput(false);
   };
 
-  // Handle remove tag
   const handleRemoveTag = (tagToRemove: string) => {
     setTags(tags.filter((t) => t !== tagToRemove));
   };
 
-  // Save changes
+  const handleCancel = () => {
+    setSelectedCategoryId(article.categoryId || "");
+    setTags((article.tags || []).map((tag) => tag.trim()));
+    setSaveError("");
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
+    setSaveError("");
     try {
       const updateData: { categoryId?: string; tags?: string[] } = {};
-
-      if (selectedCategoryId !== article.categoryId) {
+      if (selectedCategoryId !== (article.categoryId || "")) {
         updateData.categoryId =
           selectedCategoryId || (null as unknown as string);
       }
       if (JSON.stringify(tags) !== JSON.stringify(article.tags || [])) {
         updateData.tags = tags;
       }
-
       if (Object.keys(updateData).length > 0) {
         const result = await updateArticle(article.id, updateData);
         if (result.success) {
           router.refresh();
+        } else {
+          setSaveError(t.categories.saveError);
         }
       }
     } catch (error) {
-      console.error("Failed to save categories/tags:", error);
+      setSaveError(t.categories.saveNetworkError);
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Handle new tag keypress
-  const handleTagKeyPress = (e: React.KeyboardEvent) => {
+  const handleTagKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddTag();
@@ -123,140 +113,134 @@ export function CategoriesTags({ article }: CategoriesTagsProps) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.5, ease: [0.25, 1, 0.5, 1] }}
-      className="surface-card p-6 space-y-4"
+    <motion.section
+      initial={prefersReducedMotion ? false : { opacity: 0 }}
+      animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white border border-stone-200 rounded-2xl p-5 space-y-4"
     >
-      <div className="flex items-center justify-between pb-2 border-b border-stone-50">
-        <h4 className="text-xs font-bold uppercase tracking-widest text-stone-900">
-          Categories & Tags
-        </h4>
+      <header className="flex items-baseline justify-between">
+        <h2 className="text-sm font-semibold text-stone-800">{t.categories.heading}</h2>
         {hasChanges && (
-          <motion.button
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleSave}
-            disabled={isSaving}
-            className="text-primary flex items-center gap-1 text-xs font-semibold disabled:opacity-50"
-          >
-            {isSaving ? (
-              <FiLoader className="text-sm animate-spin" />
-            ) : (
-              <FiSave className="text-sm" />
+          <div className="flex items-center gap-2">
+            {saveError && (
+              <span className="text-xs text-red-600" role="alert">
+                {saveError}
+              </span>
             )}
-            Save
-          </motion.button>
+            <button
+              onClick={handleCancel}
+              disabled={isSaving}
+              className="text-xs font-medium text-stone-400 hover:text-stone-700 transition-colors disabled:opacity-50"
+            >
+              {t.categories.cancel}
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="text-xs font-medium text-primary hover:text-primary-dark transition-colors flex items-center gap-1 disabled:opacity-50"
+            >
+              {isSaving ? (
+                <FiLoader className="text-xs animate-spin" />
+              ) : (
+                <FiSave className="text-xs" />
+              )}
+              {t.categories.save}
+            </button>
+          </div>
         )}
-      </div>
+      </header>
 
       <div className="space-y-4">
-        {/* Category */}
-        <div className="relative">
-          <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">
-            Category
+        <div>
+          <label
+            htmlFor="article-category"
+            className="block text-xs text-stone-400 font-medium uppercase tracking-wider mb-1.5"
+          >
+            {t.categories.category}
           </label>
           <div className="relative">
             <select
+              id="article-category"
               value={selectedCategoryId}
               onChange={handleCategoryChange}
-              className="surface-input w-full appearance-none cursor-pointer pr-10"
+              className="w-full appearance-none cursor-pointer pr-10 text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             >
-              <option value="">Select category</option>
+              <option value="">{t.categories.selectCategory}</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
               ))}
             </select>
-            <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
+            <FiChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none" />
           </div>
         </div>
 
-        {/* Tags */}
         <div>
-          <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">
-            Tags
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag, index) => (
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0 2px 8px rgba(249, 115, 22, 0.3)",
-                }}
-                className="px-2 py-1 text-[10px] font-bold rounded flex items-center gap-1 cursor-default transition-shadow bg-primary-50 text-primary"
+          <label className="block text-xs text-stone-400 font-medium uppercase tracking-wider mb-1.5">{t.categories.tags}</label>
+          <div className="flex flex-wrap gap-1.5">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg bg-stone-100 text-stone-600 font-medium"
               >
                 {tag}
-                <motion.span
-                  whileHover={{ scale: 1.2, rotate: 90 }}
-                  transition={{ duration: 0.2 }}
-                  className="cursor-pointer"
+                <button
+                  type="button"
                   onClick={() => handleRemoveTag(tag)}
+                  aria-label={`Remove ${tag}`}
+                  className="text-stone-400 hover:text-stone-700 transition-colors"
                 >
-                  <FiX className="text-[12px]" />
-                </motion.span>
-              </motion.span>
+                  <FiX className="text-xs" />
+                </button>
+              </span>
             ))}
 
-            {/* Add Tag Button */}
             {showTagInput ? (
               <div className="flex items-center gap-1">
                 <input
                   type="text"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  onKeyDown={handleTagKeyPress}
-                  placeholder="Tag name"
-                  className="px-2 py-1 text-[10px] font-bold rounded border border-orange-300 bg-white w-20 focus:outline-none focus:border-orange-500"
+                  onKeyDown={handleTagKeyDown}
+                  placeholder={t.categories.tagPlaceholder}
+                  className="w-24 px-2.5 py-1 text-xs rounded-lg border border-stone-200 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   autoFocus
                 />
                 <button
+                  type="button"
                   onClick={handleAddTag}
-                  className="p-1 text-emerald-600 hover:bg-emerald-50 rounded"
+                  className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                  aria-label={t.categories.addTag}
                 >
                   <FiPlus className="text-sm" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setShowTagInput(false);
                     setNewTag("");
                   }}
-                  className="p-1 text-stone-400 hover:bg-stone-100 rounded"
+                  className="p-1 text-stone-400 hover:bg-stone-100 rounded-lg transition-colors"
+                  aria-label="Cancel"
                 >
                   <FiX className="text-sm" />
                 </button>
               </div>
             ) : (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
+                type="button"
                 onClick={() => setShowTagInput(true)}
-                className="px-2 py-1 text-[10px] font-bold rounded border border-dashed border-stone-300 text-stone-400 hover:border-orange-300 hover:text-orange-400 transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg border border-dashed border-stone-300 text-stone-400 hover:border-stone-400 hover:text-stone-600 transition-colors"
               >
-                <FiPlus className="text-xs inline" /> Add
-              </motion.button>
+                <FiPlus className="text-xs" />
+                {t.categories.addTag}
+              </button>
             )}
           </div>
         </div>
-
-        {/* Current Category Display */}
-        {article.category && (
-          <div className="pt-2 border-t border-stone-50">
-            <p className="text-[10px] text-stone-400">Current category</p>
-            <p className="text-sm font-semibold text-stone-700">
-              {article.category.name}
-            </p>
-          </div>
-        )}
       </div>
-    </motion.div>
+    </motion.section>
   );
 }

@@ -6,12 +6,15 @@ export type UserRole = "admin" | "user";
 // USER ENTITY - Core user data structure from backend
 // ============================================================================
 
+export type UserStatus = "active" | "inactive" | "banned";
+
 export interface User {
   id: number;
   email: string;
   name: string | null;
   avatar: string | null;
   role: UserRole;
+  status?: UserStatus;
   googleId: string | null;
   isEmailVerified: boolean;
   createdAt: string;

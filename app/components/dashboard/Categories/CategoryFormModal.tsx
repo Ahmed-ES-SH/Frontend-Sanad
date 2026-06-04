@@ -18,6 +18,8 @@ import {
   FiCheck,
 } from "react-icons/fi";
 import { BiLoader } from "react-icons/bi";
+import IconPicker from "@/app/components/global/IconPicker";
+import { getIconComponent } from "@/app/helpers/getIconComponent";
 
 const PRESET_COLORS = [
   "#f97316", // Primary Orange
@@ -50,6 +52,7 @@ export function CategoryFormModal({
   const [description, setDescription] = useState("");
   const [color, setColor] = useState("#f97316"); // Default orange
   const [icon, setIcon] = useState("");
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -337,24 +340,45 @@ export function CategoryFormModal({
 
                     <div className="space-y-1.5">
                       <label className="block text-sm font-semibold text-surface-700">
-                        Icon Identifier
+                        Icon
                       </label>
-                      <div className="p-3 bg-white border border-surface-200 rounded-xl h-full flex flex-col">
-                        <div className="relative mt-auto mb-auto">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-surface-400">
-                            <FiImage className="w-4.5 h-4.5" />
+                      <div className="p-3 bg-white border border-surface-200 rounded-xl h-full flex flex-col gap-3">
+                        <button
+                          type="button"
+                          disabled={loading}
+                          onClick={() => setShowIconPicker(true)}
+                          className="flex items-center gap-3 w-full px-3 py-2 bg-surface-50 border border-surface-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors disabled:opacity-50"
+                        >
+                          <div className="w-9 h-9 rounded-md bg-white border border-surface-200 flex items-center justify-center text-surface-600 shrink-0">
+                            {icon ? (
+                              (() => {
+                                const Icon = getIconComponent(icon);
+                                return <Icon className="text-lg" />;
+                              })()
+                            ) : (
+                              <FiImage className="w-4.5 h-4.5 text-surface-400" />
+                            )}
                           </div>
-                          <input
-                            type="text"
-                            value={icon}
-                            onChange={(e) => setIcon(e.target.value)}
-                            placeholder="e.g., box, layer"
-                            className="w-full pl-9 pr-3 py-2 bg-surface-50 border border-surface-200 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm font-medium transition-colors"
-                            disabled={loading}
-                          />
-                        </div>
-                        <p className="text-xs text-surface-500 mt-3 font-medium">
-                          Standardized icon name.
+                          <span className="text-sm font-medium text-surface-700 truncate text-left flex-1">
+                            {icon || "Pick an icon..."}
+                          </span>
+                          {icon && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIcon("");
+                              }}
+                              disabled={loading}
+                              className="p-1 rounded text-surface-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                              title="Clear icon"
+                            >
+                              <FiX className="w-4 h-4" />
+                            </button>
+                          )}
+                        </button>
+                        <p className="text-xs text-surface-500 font-medium">
+                          Click to choose an icon from the library.
                         </p>
                       </div>
                     </div>
@@ -392,6 +416,16 @@ export function CategoryFormModal({
               </div>
             </motion.div>
           </div>
+
+          <IconPicker
+            selectedIcon={icon}
+            show={showIconPicker}
+            onChange={(iconName) => {
+              setIcon(iconName);
+              setShowIconPicker(false);
+            }}
+            onClose={() => setShowIconPicker(false)}
+          />
         </>
       )}
     </AnimatePresence>

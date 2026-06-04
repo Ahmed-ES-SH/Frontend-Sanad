@@ -72,6 +72,9 @@ interface CartState {
   /** Clear the entire cart. */
   clear: () => Promise<void>;
 
+  /** Reset cart state to empty without API calls (used on logout). */
+  clearLocalState: () => void;
+
   /** Read localStorage guest cart → POST /cart/merge → clear localStorage → sync store. */
   mergeGuestCart: () => Promise<MergeCartResult>;
 }
@@ -239,6 +242,11 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   // ── Mutations ─────────────────────────────────────────────────────────────
+
+  clearLocalState: () => {
+    set({ items: [], totalItems: 0, totalAmount: 0, error: null });
+    guestCartStorage.clear();
+  },
 
   add: async (item) => {
     if (!getIsAuthenticated()) {

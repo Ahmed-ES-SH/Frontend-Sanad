@@ -77,10 +77,11 @@ export async function adminGetAllUsers(): Promise<User[]> {
 
   const allUsers: User[] = [...firstPage.data];
 
-  if (firstPage.lastPage > 1) {
+  const lastPage = firstPage.meta?.lastPage ?? 1;
+  if (lastPage > 1) {
     const requests = [];
 
-    for (let page = 2; page <= firstPage.lastPage; page++) {
+    for (let page = 2; page <= lastPage; page++) {
       requests.push(adminGetUsers({ page }));
     }
 

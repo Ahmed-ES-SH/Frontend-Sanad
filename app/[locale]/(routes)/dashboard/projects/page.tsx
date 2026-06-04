@@ -1,6 +1,8 @@
 import { getAdminProjects } from "@/app/actions/portfolioActions";
 import { getCategories } from "@/app/actions/blogActions";
 import ProjectsClientTable from "@/app/components/dashboard/ProjectsPage/ProjectsClientTable";
+import ProjectsKpis from "@/app/components/dashboard/ProjectsPage/ProjectsKpis";
+import ProjectsCharts from "@/app/components/dashboard/ProjectsPage/ProjectsCharts";
 
 export default async function ProjectsPage() {
   const [projectsResult, categories] = await Promise.all([
@@ -10,6 +12,8 @@ export default async function ProjectsPage() {
 
   return (
     <main className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+      <ProjectsKpis />
+      <ProjectsCharts />
       <ProjectsClientTable
         initialProjects={projectsResult.data}
         initialMeta={projectsResult.meta}

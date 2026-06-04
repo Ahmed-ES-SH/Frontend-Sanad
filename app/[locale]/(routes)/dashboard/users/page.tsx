@@ -23,6 +23,8 @@ export default async function UsersPage() {
     error = "Failed to load users";
   }
 
+  const meta = usersResponse?.meta;
+
   return (
     <>
       <main className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
@@ -52,10 +54,10 @@ export default async function UsersPage() {
         {/* Client Side Users */}
         <ClientUsers
           initialData={usersResponse.data}
-          total={usersResponse.total}
-          page={usersResponse.page}
-          perPage={usersResponse.perPage}
-          lastPage={usersResponse.lastPage}
+          total={meta?.total ?? 0}
+          page={meta?.page ?? 1}
+          perPage={meta?.perPage ?? 10}
+          lastPage={meta?.lastPage ?? 1}
         />
       </main>
     </>

@@ -14,6 +14,7 @@ interface UserSelectionStepProps {
   onSelectionChange: (ids: number[]) => void;
   onUsersFetched: (users: SelectedUserInfo[]) => void;
   onContinue: () => void;
+  onSelectAndContinue?: (userId: number) => void;
   validationError: string | null;
 }
 
@@ -25,6 +26,7 @@ export function UserSelectionStep({
   onSelectionChange,
   onUsersFetched,
   onContinue,
+  onSelectAndContinue,
   validationError,
 }: UserSelectionStepProps) {
   const hasSelection = selectedUsers.length > 0;
@@ -102,7 +104,9 @@ export function UserSelectionStep({
         selectedUsers={selectedUsers}
         onSelectionChange={onSelectionChange}
         onUsersFetched={onUsersFetched}
-        onSelectAndContinue={userMode === "single" ? onContinue : undefined}
+        onSelectAndContinue={
+          userMode === "single" ? onSelectAndContinue : undefined
+        }
         mode={userMode}
         maxSelections={maxSelections}
       />

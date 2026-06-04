@@ -21,6 +21,9 @@ export default function UserTableSkeleton({ rows = 10 }: UserTableSkeletonProps)
                 Role
               </th>
               <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">
                 Verified
               </th>
               <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">
@@ -51,6 +54,11 @@ export default function UserTableSkeleton({ rows = 10 }: UserTableSkeletonProps)
                 {/* Role Badge Skeleton */}
                 <td className="px-6 py-5">
                   <div className="h-6 w-14 bg-stone-200 rounded-full" />
+                </td>
+
+                {/* Status Badge Skeleton */}
+                <td className="px-6 py-5">
+                  <div className="h-6 w-16 bg-stone-200 rounded-full" />
                 </td>
 
                 {/* Verification Status Skeleton */}

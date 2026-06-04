@@ -97,8 +97,9 @@ export default function Sidebar() {
         {navItems.map((item) => {
           const fullHref = `/${locale}${item.href}`;
           const isActive =
-            pathname === fullHref ||
-            (item.href === "/dashboard" && pathname === `/${locale}/dashboard`);
+            item.href === "/dashboard"
+              ? pathname === fullHref
+              : pathname === fullHref || pathname.startsWith(`${fullHref}/`);
           const Icon = item.icon;
 
           return (

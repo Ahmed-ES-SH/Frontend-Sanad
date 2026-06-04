@@ -74,7 +74,7 @@ export default function UserOrdersPage({ data, meta }: UserOrdersPageProps) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const hasNextPage = currentMeta.page < currentMeta.total;
+  const hasNextPage = currentMeta.page < currentMeta.lastPage;
   const hasPrevPage = currentMeta.page > 1;
 
   // Format display ID — short UUID (first 8 chars)
@@ -206,7 +206,7 @@ export default function UserOrdersPage({ data, meta }: UserOrdersPageProps) {
         )}
 
         {/* Pagination */}
-        {currentMeta && currentMeta?.total > 1 && (
+        {currentMeta && currentMeta?.lastPage > 1 && (
           <PaginationBar
             meta={currentMeta as PaginationMeta}
             hasPrevPage={hasPrevPage}

@@ -100,17 +100,11 @@ export default function ClientUsers({
   });
 
   // Get users and pagination data from server response
-  const userData: UsersPaginatedResponse = usersResponse || {
-    data: initialData,
-    total: initialTotal,
-    page: currentPage,
-    perPage,
-    lastPage: initialLastPage,
-  };
+  const usersResponseData = usersResponse ?? { data: initialData, meta: { total: initialTotal, page: currentPage, perPage, lastPage: initialLastPage, limit: perPage } };
 
-  const users: User[] = userData.data || [];
-  const total = userData.total || 0;
-  const serverLastPage = userData.lastPage || 1;
+  const users: User[] = usersResponseData.data || [];
+  const total = usersResponseData.meta?.total ?? 0;
+  const serverLastPage = usersResponseData.meta?.lastPage ?? 1;
 
   // Update filters and reset to page 1
   const updateFilters = useCallback((newFilters: UserFilterState) => {

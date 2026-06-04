@@ -69,6 +69,9 @@ export default function UserTable({ users, onDelete, deletingId }: UserTableProp
                 Role
               </th>
               <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">
                 Verified
               </th>
               <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider">
@@ -115,6 +118,21 @@ export default function UserTable({ users, onDelete, deletingId }: UserTableProp
                     }`}
                   >
                     {user.role === "admin" ? "Admin" : "User"}
+                  </span>
+                </td>
+
+                {/* User Status */}
+                <td className="px-6 py-5">
+                  <span
+                    className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                      user.status === "active"
+                        ? "bg-green-100 text-green-700"
+                        : user.status === "inactive"
+                          ? "bg-stone-100 text-stone-600"
+                          : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {user.status ?? "active"}
                   </span>
                 </td>
 

@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { FiEye, FiUser } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { PaymentResponseDto } from "@/app/types/payments";
@@ -74,7 +75,7 @@ export default function TransactionTable({
               <th className="px-6 py-4 whitespace-nowrap">Date</th>
               <th className="px-6 py-4 whitespace-nowrap">Amount</th>
               <th className="px-6 py-4 whitespace-nowrap">Status</th>
-              <th className="px-6 py-4 whitespace-nowrap">User ID</th>
+              <th className="px-6 py-4 whitespace-nowrap">User</th>
               <th className="px-6 py-4 whitespace-nowrap text-right">
                 Actions
               </th>
@@ -98,7 +99,13 @@ export default function TransactionTable({
                     <div className="h-6 bg-stone-200 rounded-full w-20"></div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="h-4 bg-stone-200 rounded w-24"></div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-stone-200"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 bg-stone-200 rounded w-24"></div>
+                        <div className="h-3 bg-stone-200 rounded w-32"></div>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="h-6 bg-stone-200 rounded w-8 ml-auto"></div>
@@ -142,14 +149,29 @@ export default function TransactionTable({
                         payment.status.slice(1)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-stone-400">
-                        <FiUser className="w-3 h-3" />
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-stone-100 flex items-center justify-center text-stone-400 overflow-hidden shrink-0">
+                        {payment.user?.avatar ? (
+                          <Image
+                            src={payment.user.avatar}
+                            alt={payment.user.name}
+                            width={36}
+                            height={36}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <FiUser className="w-4 h-4" />
+                        )}
                       </div>
-                      <span className="truncate max-w-[150px]">
-                        {payment.userId ? payment.userId : "Fake"}
-                      </span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-stone-900 truncate">
+                          {payment.user?.name ?? "Unknown User"}
+                        </p>
+                        <p className="text-xs text-stone-500 truncate">
+                          {payment.user?.email ?? "—"}
+                        </p>
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">

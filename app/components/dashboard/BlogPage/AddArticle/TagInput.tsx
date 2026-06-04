@@ -1,3 +1,5 @@
+"use client";
+
 import { FiX, FiPlus } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,6 +11,9 @@ interface TagInputProps {
   onRemoveTag: (tag: string) => void;
   placeholder: string;
   isRTL: boolean;
+  ariaLabel: string;
+  removeTagLabel: string;
+  addTagLabel: string;
 }
 
 export default function TagInput({
@@ -19,9 +24,16 @@ export default function TagInput({
   onRemoveTag,
   placeholder,
   isRTL,
+  ariaLabel,
+  removeTagLabel,
+  addTagLabel,
 }: TagInputProps) {
   return (
-    <div className="flex flex-wrap gap-2 p-2 bg-white border border-stone-200 rounded-xl min-h-[46px] items-center shadow-sm">
+    <div
+      role="group"
+      aria-label={ariaLabel}
+      className="flex flex-wrap gap-1.5 p-2 bg-white border border-stone-200 rounded-xl min-h-[48px] items-center focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all"
+    >
       <AnimatePresence mode="popLayout">
         {tags.map((tag) => (
           <motion.span
@@ -35,33 +47,45 @@ export default function TagInput({
               stiffness: 500,
               damping: 30,
             }}
-            className="bg-stone-50 text-stone-700 px-2.5 py-1 rounded-lg text-[0.7rem] font-black flex items-center gap-1.5 border border-stone-200/60 shadow-sm"
+            className="bg-stone-50 text-stone-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border border-stone-200"
           >
-            {tag}
-            <FiX
-              className="cursor-pointer hover:text-red-500 transition-colors"
+            <span>{tag}</span>
+            <button
+              type="button"
               onClick={() => onRemoveTag(tag)}
-            />
+              aria-label={`${removeTagLabel} ${tag}`}
+              className="cursor-pointer hover:text-red-500 transition-colors p-0.5 -m-0.5 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            >
+              <FiX size={12} />
+            </button>
           </motion.span>
         ))}
       </AnimatePresence>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 flex-1 min-w-[80px]">
         <input
           type="text"
           value={newTag}
           onChange={(e) => onNewTagChange(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), onAddTag())}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === ",") {
+              e.preventDefault();
+              onAddTag();
+            }
+          }}
+          onBlur={() => newTag.trim() && onAddTag()}
           placeholder={placeholder}
-          className="text-[0.7rem] font-black px-2 py-1 outline-none w-16"
+          aria-label={placeholder}
+          className="text-sm px-2 py-1.5 outline-none flex-1 min-w-0 bg-transparent text-stone-700 placeholder:text-stone-400"
         />
-        <motion.button
-          layout
-          whileHover={{ scale: 1.05 }}
+        <button
+          type="button"
           onClick={onAddTag}
-          className="text-primary text-[0.7rem] font-black px-1 flex items-center hover:opacity-70 transition-all"
+          disabled={!newTag.trim()}
+          aria-label={addTagLabel}
+          className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
         >
-          <FiPlus size={12} />
-        </motion.button>
+          <FiPlus size={16} className={isRTL ? "rotate-180" : ""} />
+        </button>
       </div>
     </div>
   );

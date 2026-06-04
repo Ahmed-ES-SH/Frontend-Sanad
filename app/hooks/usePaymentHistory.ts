@@ -100,7 +100,7 @@ export function usePaymentHistory(options: UsePaymentHistoryOptions = {}) {
 
   const meta = queryResult.data?.meta ?? null;
   const currentPage = meta?.page ?? 1;
-  const totalPages = meta?.totalPages ?? 1;
+  const totalPages = meta?.lastPage ?? 1;
   const total = meta?.total ?? 0;
 
   // Pagination helpers

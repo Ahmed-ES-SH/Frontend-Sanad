@@ -117,7 +117,7 @@ export function ChartsPlaceholder() {
               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
               stroke="currentColor"
-              stroke-width="3"
+               strokeWidth={3}
             ></path>
             <motion.path
               initial={{ pathLength: 0 }}

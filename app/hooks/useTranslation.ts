@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
 import { useParams } from "next/navigation";
@@ -62,7 +63,7 @@ function getNestedValue<T, P extends NestedKeys<T>>(
 export function useTranslation<P extends NestedKeys<Messages>>(path: P) {
   const params = useParams();
   const locale = (params?.locale as Locale) ?? "en";
-
+  //@ts-ignore
   const messages: Messages = locale === "en" ? en : ar;
 
   return getNestedValue(messages, path);

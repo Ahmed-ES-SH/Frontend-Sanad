@@ -51,8 +51,17 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
       set({ user: null });
 
-      router.push("/");
-      router.refresh();
+      // Clear cart state and guest storage for seamless guest transition
+      try {
+        const { useCartStore } = require("./CartSlice") as {
+          useCartStore: { getState: () => { clearLocalState: () => void } };
+        };
+        useCartStore.getState().clearLocalState();
+      } catch {
+        // Cart module might not be loaded yet — fail silently
+      }
+
+      router.replace("/");
     } catch {
       toast.error("Logout failed");
     } finally {

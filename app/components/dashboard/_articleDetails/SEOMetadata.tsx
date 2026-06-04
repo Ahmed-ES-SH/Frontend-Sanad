@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Article } from "@/app/types/blog";
-import { motion } from "framer-motion";
-import { FiCheckCircle, FiSave, FiX } from "react-icons/fi";
+import { motion, useReducedMotion } from "framer-motion";
+import { FiSave, FiX } from "react-icons/fi";
+import { useTranslation } from "@/app/hooks/useTranslation";
 import { updateArticle } from "@/app/actions/blogActions";
-import { HelpIcon } from "../DashboardPage/Tooltip";
 
 interface SEOMetadataProps {
   article: Article;
@@ -14,241 +14,148 @@ interface SEOMetadataProps {
 
 export function SEOMetadata({ article }: SEOMetadataProps) {
   const router = useRouter();
+  const prefersReducedMotion = useReducedMotion();
+  const t = useTranslation("ArticleDetails");
 
-  // SEO fields
-  const [focusKeyword, setFocusKeyword] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
 
-  // Editing state
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
-  // Initial load from article
   useEffect(() => {
-    const handleFoucs = (title: string) => {
-      setFocusKeyword(title);
-    };
-
-    // Use title as default focus keyword
-    handleFoucs(article.title);
-
-    const handleDesc = (desc: string) => {
-      setMetaDescription(desc);
-    };
-
-    // Use excerpt as meta description if available
-    handleDesc(article.excerpt || "");
+    setMetaDescription(article.excerpt || "");
   }, [article]);
-
-  // Calculate SEO score (simplified)
-  const calculateSeoScore = () => {
-    let score = 0;
-    const maxScore = 4;
-
-    // Check title length (50-300 chars is ideal)
-    if (
-      article.title &&
-      article.title.length >= 50 &&
-      article.title.length <= 300
-    )
-      score++;
-    // Check focus keyword presence
-    if (focusKeyword && focusKeyword.length > 0) score++;
-    // Check meta description
-    if (
-      metaDescription &&
-      metaDescription.length >= 120 &&
-      metaDescription.length <= 320
-    )
-      score++;
-    // Check excerpt
-    if (article.excerpt && article.excerpt.length > 0) score++;
-
-    return Math.round((score / maxScore) * 100);
-  };
-
-  const seoScore = calculateSeoScore();
 
   const handleSaveSEO = async () => {
     setIsSaving(true);
+    setSaveError("");
     try {
-      // Update excerpt if meta description is different
       const updateData: { excerpt?: string } = {};
-
-      if (metaDescription !== article.excerpt) {
+      if (metaDescription !== (article.excerpt || "")) {
         updateData.excerpt = metaDescription;
       }
-
       if (Object.keys(updateData).length > 0) {
         const result = await updateArticle(article.id, updateData);
         if (result.success) {
-          setSaveSuccess(true);
-          setTimeout(() => setSaveSuccess(false), 2000);
+          setIsEditing(false);
           router.refresh();
+        } else {
+          setSaveError(t.seo.saveError);
+          return;
         }
+      } else {
+        setIsEditing(false);
       }
     } catch (error) {
-      console.error("Failed to save SEO:", error);
+      setSaveError(t.seo.saveNetworkError);
     } finally {
       setIsSaving(false);
-      setIsEditing(false);
     }
   };
 
   const handleCancel = () => {
-    setFocusKeyword(article.title);
     setMetaDescription(article.excerpt || "");
     setIsEditing(false);
-  };
-
-  // Get score color based on percentage
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "bg-emerald-500";
-    if (score >= 60) return "bg-yellow-500";
-    return "bg-red-500";
+    setSaveError("");
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.4, ease: [0.25, 1, 0.5, 1] }}
-      className="surface-card p-6 space-y-4"
+    <motion.section
+      initial={prefersReducedMotion ? false : { opacity: 0 }}
+      animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white border border-stone-200 rounded-2xl p-5 space-y-4"
     >
-      <div className="flex items-center justify-between pb-2 border-b border-stone-50">
-        <div className="flex items-center gap-2">
-          <h4 className="text-xs font-bold uppercase tracking-widest text-stone-900">
-            SEO Metadata
-          </h4>
-          <HelpIcon content="Content completeness score - checks title length (50-300 chars), description (120-320 chars), and excerpt presence. Does not measure actual SEO quality." />
-        </div>
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.3, delay: 0.5 }}
-          className={seoScore >= 80 ? "text-emerald-600" : "text-stone-400"}
-        >
-          <FiCheckCircle className="text-lg" />
-        </motion.div>
-      </div>
+      <header className="flex items-baseline justify-between">
+        <h2 className="text-sm font-semibold text-stone-800">{t.seo.heading}</h2>
+        {!isEditing && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="text-xs font-medium text-stone-400 hover:text-stone-700 transition-colors"
+          >
+            {t.seo.edit}
+          </button>
+        )}
+      </header>
 
       <div className="space-y-4">
-        {/* Focus Keyword */}
         <div>
-          <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">
-            Focus Keyword
+          <label className="block text-xs text-stone-400 font-medium uppercase tracking-wider mb-1.5">
+            {t.seo.focusKeyword}
           </label>
-          {isEditing ? (
-            <input
-              type="text"
-              value={focusKeyword}
-              onChange={(e) => setFocusKeyword(e.target.value)}
-              className="surface-input w-full"
-              placeholder="Enter focus keyword"
-            />
-          ) : (
-            <div className="bg-stone-50 px-3 py-2 rounded border border-stone-100 text-sm text-stone-900 font-medium">
-              {focusKeyword || "Not set"}
-            </div>
-          )}
-        </div>
-
-        {/* Meta Description */}
-        <div>
-          <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">
-            Excerpt (Meta Description)
-          </label>
-          {isEditing ? (
-            <textarea
-              value={metaDescription}
-              onChange={(e) => setMetaDescription(e.target.value)}
-              className="surface-input w-full min-h-[80px]"
-              placeholder="Enter meta description"
-              rows={3}
-            />
-          ) : (
-            <p className="text-xs text-stone-600 leading-relaxed bg-stone-50 p-3 rounded border border-stone-100">
-              {metaDescription || "No description set"}
-            </p>
-          )}
-          <p className="text-[10px] text-stone-400 mt-1">
-            {metaDescription.length}/320 characters
+          <p className="text-sm text-stone-700 bg-stone-50 px-3.5 py-2.5 rounded-xl border border-stone-100">
+            {article.title}
+          </p>
+          <p className="text-xs text-stone-400 mt-1.5">
+            {t.seo.focusKeywordNote}
           </p>
         </div>
 
-        {/* Edit/Save Buttons */}
-        <div className="flex gap-2 pt-2">
-          {isEditing ? (
-            <>
-              <button
-                onClick={handleSaveSEO}
-                disabled={isSaving}
-                className="flex-1 px-3 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                {isSaving ? (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <FiSave className="text-sm" />
-                    Save
-                  </>
-                )}
-              </button>
-              <button
-                onClick={handleCancel}
-                className="px-3 py-2 bg-stone-100 text-stone-600 text-sm font-semibold rounded-lg hover:bg-stone-200 transition-colors"
-              >
-                <FiX />
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="w-full px-3 py-2 bg-stone-50 text-stone-600 text-sm font-semibold rounded-lg hover:bg-stone-100 transition-colors"
-            >
-              Edit SEO
-            </button>
-          )}
-        </div>
-
-        {/* SEO Score Bar */}
-        <div className="flex items-center gap-2 pt-2">
-          <div className="h-1.5 flex-1 bg-stone-100 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${seoScore}%` }}
-              transition={{
-                duration: 0.8,
-                delay: 0.6,
-                ease: [0.25, 1, 0.5, 1],
-              }}
-              className={`h-full ${getScoreColor(seoScore)}`}
-            />
-          </div>
-          <span
-            className={`text-[10px] font-bold uppercase ${
-              seoScore >= 80
-                ? "text-emerald-600"
-                : seoScore >= 60
-                  ? "text-yellow-600"
-                  : "text-red-600"
-            }`}
+        <div>
+          <label
+            htmlFor="seo-meta-description"
+            className="block text-xs text-stone-400 font-medium uppercase tracking-wider mb-1.5"
           >
-            {seoScore}% Content
-          </span>
+            {t.seo.metaDescription}
+          </label>
+          {isEditing ? (
+            <textarea
+              id="seo-meta-description"
+              value={metaDescription}
+              onChange={(e) => setMetaDescription(e.target.value)}
+              className="w-full min-h-[88px] text-sm bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              placeholder={t.seo.metaDescriptionPlaceholder}
+              rows={3}
+            />
+          ) : (
+            <p className="text-sm text-stone-600 bg-stone-50 px-3.5 py-2.5 rounded-xl border border-stone-100 leading-relaxed">
+              {metaDescription || (
+                <span className="text-stone-400">{t.seo.noDescription}</span>
+              )}
+            </p>
+          )}
+          <p className="text-xs text-stone-400 mt-1.5 tabular-nums">
+            {metaDescription.length} / 320
+          </p>
         </div>
 
-        {/* Slug Display */}
-        <div className="pt-4 border-t border-stone-50">
-          <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1">
-            URL Slug
-          </label>
-          <p className="text-xs text-orange-600 font-mono bg-orange-50 p-2 rounded">
+        {saveError && (
+          <div className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl px-3.5 py-2.5" role="alert">
+            {saveError}
+          </div>
+        )}
+
+        {isEditing && (
+          <div className="flex gap-2 pt-1">
+            <button
+              onClick={handleSaveSEO}
+              disabled={isSaving}
+              className="flex-1 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary-dark transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50 shadow-sm shadow-primary/20"
+            >
+              {isSaving ? (
+                <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <FiSave className="text-sm" />
+              )}
+              {t.seo.save}
+            </button>
+            <button
+              onClick={handleCancel}
+              className="px-4 py-2.5 bg-stone-100 text-stone-600 text-sm font-medium rounded-xl hover:bg-stone-200 transition-colors"
+            >
+              <FiX className="text-sm" />
+            </button>
+          </div>
+        )}
+
+        <div className="pt-3.5 border-t border-stone-100">
+          <p className="text-xs text-stone-400 mb-1">{t.seo.url}</p>
+          <p className="text-xs font-mono text-stone-500 break-all">
             /blog/{article.slug}
           </p>
         </div>
       </div>
-    </motion.div>
+    </motion.section>
   );
 }

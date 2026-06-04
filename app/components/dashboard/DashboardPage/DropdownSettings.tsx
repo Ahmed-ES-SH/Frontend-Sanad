@@ -12,6 +12,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/app/hooks/useTranslation";
 import { useLocale } from "@/app/hooks/useLocale";
+import { showComingSoon } from "@/app/helpers/_dashboard/showComingSoon";
 
 const settingsOptions = [
   { id: "appearance", label: "Appearance & Theme", icon: FiMonitor },
@@ -79,7 +80,10 @@ export default function DropdownSettings() {
                   <button
                     key={option.id}
                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-start font-medium transition-colors text-stone-600 hover:bg-stone-200/50 hover:text-stone-900 w-full"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      showComingSoon(option.label);
+                      setIsOpen(false);
+                    }}
                   >
                     <Icon size={16} className="text-stone-400 shrink-0" />
                     <span>{option.label}</span>

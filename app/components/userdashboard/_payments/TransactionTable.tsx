@@ -110,7 +110,7 @@ export default function TransactionTable({
 
   const apiPayments = effectiveData?.data ?? [];
   const meta = effectiveData?.meta;
-  const totalPages = meta?.totalPages ?? 1;
+  const totalPages = meta?.lastPage ?? 1;
   const total = meta?.total ?? 0;
   const hasNextPage = (meta?.page ?? 1) < totalPages;
   const hasPrevPage = (meta?.page ?? 1) > 1;

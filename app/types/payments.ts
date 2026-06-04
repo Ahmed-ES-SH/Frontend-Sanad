@@ -12,9 +12,16 @@ export type PaymentStatus =
   | "refunded"
   | "partially_refunded";
 
+export interface PaymentUser {
+  name: string;
+  email: string;
+  avatar: string | null;
+}
+
 export interface PaymentResponseDto {
   id: string;
   userId: string | null;
+  user: PaymentUser | null;
   stripePaymentIntentId: string;
   stripeCustomerId: string | null;
   amount: number;

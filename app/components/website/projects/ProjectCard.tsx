@@ -21,13 +21,11 @@ export default function ProjectCard({ project, locale, t }: ProjectCardProps) {
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative h-[420px] w-full overflow-hidden rounded-[2rem] bg-surface-100 shadow-sm hover:shadow-surface-xl transition-all duration-500"
+      initial={{ y: 32 }}
+      whileInView={{ y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="group relative h-105 w-full overflow-hidden rounded-4xl bg-surface-100 shadow-sm hover:shadow-surface-xl transition-all duration-500"
     >
       {/* Category Badge - Floating */}
       <div
@@ -53,7 +51,7 @@ export default function ProjectCard({ project, locale, t }: ProjectCardProps) {
           />
         )}
         {/* Gradient Overlay for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-surface-900/90 via-surface-900/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-linear-to-t from-surface-900/90 via-surface-900/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
       </div>
 
       {/* Content Overlay */}
@@ -87,7 +85,7 @@ export default function ProjectCard({ project, locale, t }: ProjectCardProps) {
 
             <LocaleLink
               href={`/portfolio/${formatTitle(project.title)}`}
-              className="bg-primary text-white hover:-translate-y-1 p-2 rounded-lg  text-xs font-black text-white uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 delay-300"
+              className="bg-primary text-white hover:-translate-y-1 p-2 rounded-lg  text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 delay-300"
             >
               {t.view}
             </LocaleLink>
@@ -96,7 +94,7 @@ export default function ProjectCard({ project, locale, t }: ProjectCardProps) {
       </div>
 
       {/* Interactive Border Glow */}
-      <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/20 rounded-[2rem] transition-colors duration-500 z-30 pointer-events-none" />
+      <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/20 rounded-4xl transition-colors duration-500 z-30 pointer-events-none" />
     </motion.div>
   );
 }

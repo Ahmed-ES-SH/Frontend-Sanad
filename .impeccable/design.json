@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-03T00:00:00.000Z",
+  "title": "Design System: Sanad",
+  "extensions": {
+    "colorMeta": {
+      "signal-orange": {
+        "role": "primary",
+        "displayName": "Signal Orange",
+        "canonical": "oklch(0.68 0.19 45)",
+        "tonalRamp": ["oklch(0.18 0.14 45)", "oklch(0.28 0.17 45)", "oklch(0.38 0.19 45)", "oklch(0.48 0.20 45)", "oklch(0.58 0.20 45)", "oklch(0.68 0.19 45)", "oklch(0.78 0.14 45)", "oklch(0.88 0.08 45)"]
+      },
+      "emerald-state": {
+        "role": "success",
+        "displayName": "Emerald State",
+        "canonical": "oklch(0.65 0.15 160)",
+        "tonalRamp": ["oklch(0.18 0.10 160)", "oklch(0.28 0.12 160)", "oklch(0.38 0.14 160)", "oklch(0.48 0.15 160)", "oklch(0.58 0.15 160)", "oklch(0.65 0.15 160)", "oklch(0.78 0.10 160)", "oklch(0.88 0.06 160)"]
+      },
+      "rose-state": {
+        "role": "error",
+        "displayName": "Rose State",
+        "canonical": "oklch(0.65 0.19 35)",
+        "tonalRamp": ["oklch(0.18 0.14 35)", "oklch(0.28 0.17 35)", "oklch(0.38 0.19 35)", "oklch(0.48 0.20 35)", "oklch(0.58 0.20 35)", "oklch(0.65 0.19 35)", "oklch(0.78 0.12 35)", "oklch(0.88 0.07 35)"]
+      },
+      "stone-ink": {
+        "role": "neutral",
+        "displayName": "Stone Ink",
+        "canonical": "oklch(0.19 0.01 45)",
+        "tonalRamp": ["oklch(0.12 0.005 45)", "oklch(0.19 0.01 45)", "oklch(0.30 0.015 45)", "oklch(0.42 0.018 45)", "oklch(0.56 0.02 45)", "oklch(0.70 0.015 45)", "oklch(0.85 0.01 45)", "oklch(0.97 0.005 45)"]
+      },
+      "stone-white": {
+        "role": "neutral",
+        "displayName": "Stone White",
+        "canonical": "oklch(1 0 0)",
+        "tonalRamp": ["oklch(0.92 0.005 45)", "oklch(0.94 0.003 45)", "oklch(0.96 0.002 45)", "oklch(0.98 0.001 45)", "oklch(0.99 0.001 45)", "oklch(1 0 0)", "oklch(1 0 0)", "oklch(1 0 0)"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero and section headlines. Used on the public-facing brand site. Dashboard caps at Heading LG."
+      },
+      "heading": {
+        "displayName": "Heading",
+        "purpose": "Section titles, modal headers, card titles across dashboard and public surfaces."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default reading text in dashboard tables, paragraphs, and forms."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Button labels, form labels, table header text. Uppercase + tracking reserved for short labels only."
+      },
+      "mono": {
+        "displayName": "Code / Mono",
+        "purpose": "URL slugs, code snippets, timestamps in data-heavy views."
+      }
+    },
+    "shadows": [
+      { "name": "surface-sm", "value": "0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04)", "purpose": "Resting elevation for all card surfaces." },
+      { "name": "surface-md", "value": "0 4px 6px rgba(15,23,42,0.05), 0 2px 4px rgba(15,23,42,0.04)", "purpose": "Hover state for cards; active dropdowns." },
+      { "name": "surface-lg", "value": "0 10px 15px rgba(15,23,42,0.06), 0 4px 6px rgba(15,23,42,0.04)", "purpose": "Elevated panels, mobile drawers, sticky elements." },
+      { "name": "surface-xl", "value": "0 20px 25px rgba(15,23,42,0.08), 0 8px 10px rgba(15,23,42,0.04)", "purpose": "Modals, dialogs, maximum elevation." },
+      { "name": "button-glow", "value": "0 4px 14px rgba(249,115,22,0.22)", "purpose": "Primary button glow at rest." },
+      { "name": "button-glow-hover", "value": "0 8px 22px rgba(234,88,12,0.28)", "purpose": "Primary button hover glow; deeper and warmer." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Entrance animations, modal panel entry, page element reveals." },
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Hover transitions, button lift, card border shift." },
+      { "name": "ease-spring", "value": "cubic-bezier(0.34, 1.56, 0.64, 1)", "purpose": "Micro-interactions (scale bounce on icons, notification badge pop). Used sparingly." },
+      { "name": "ease-smooth", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default transition easing for state changes (input focus, surface hover)." },
+      { "name": "duration-standard", "value": "200ms", "purpose": "Most hover, focus, and state transitions." },
+      { "name": "duration-modal", "value": "150-180ms", "purpose": "Modal backdrop fade, panel scale-fade entry." },
+      { "name": "duration-shimmer", "value": "2s", "purpose": "Loading skeleton shimmer animation." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary CTA button. Signal Orange background, white text, glow shadow. Used for the single primary action on a panel.",
+      "html": "<button class=\"ds-btn-primary\">Save changes</button>",
+      "css": ".ds-btn-primary { background: #f97316; color: #fff; padding: 12px 24px; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 15px; border-radius: 12px; border: none; box-shadow: 0 4px 14px rgba(249,115,22,0.22); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-primary:hover { background: #ea580c; box-shadow: 0 8px 22px rgba(234,88,12,0.28); transform: translateY(-2px); } .ds-btn-primary:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(234,88,12,0.22); } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; } .ds-btn-primary:focus-visible { outline: 2px solid #f97316; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary action button. White background, Signal Orange text, defined border. Used for non-primary actions alongside a primary button.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { background: #fff; color: #f97316; padding: 12px 24px; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 15px; border-radius: 12px; border: 1px solid #e7e5e4; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-secondary:hover { background: #fff7ed; border-color: #fb923c; box-shadow: 0 4px 12px rgba(249,115,22,0.12); transform: translateY(-1px); } .ds-btn-secondary:active { transform: translateY(0); } .ds-btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-secondary:focus-visible { outline: 2px solid #f97316; outline-offset: 2px; }"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Destructive action button. Rose red background, white text. Used for Delete, Remove, Unpublish, Discard.",
+      "html": "<button class=\"ds-btn-destructive\">Delete article</button>",
+      "css": ".ds-btn-destructive { background: #ef4444; color: #fff; padding: 12px 24px; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 15px; border-radius: 12px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-destructive:hover { background: #dc2626; } .ds-btn-destructive:active { transform: translateY(0); } .ds-btn-destructive:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-destructive:focus-visible { outline: 2px solid #ef4444; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Subtle text-only button for inline actions like Edit, Cancel, View all.",
+      "html": "<button class=\"ds-btn-ghost\">Edit</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #57534e; padding: 8px 14px; font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 14px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-ghost:hover { background: #f5f5f4; } .ds-btn-ghost:active { background: #e7e5e4; } .ds-btn-ghost:disabled { opacity: 0.5; cursor: not-allowed; } .ds-btn-ghost:focus-visible { outline: 2px solid #f97316; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard text input with orange focus ring.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Enter value...\" />",
+      "css": ".ds-input { width: 100%; background: #fff; border: 1px solid #e7e5e4; border-radius: 12px; padding: 12px 16px; font-family: Inter, system-ui, sans-serif; font-size: 15px; color: #57534e; outline: none; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; } .ds-input:focus { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,0.15); } .ds-input::placeholder { color: #a8a29e; } .ds-input:disabled { opacity: 0.5; cursor: not-allowed; background: #f5f5f4; } .ds-input:focus-visible { outline: none; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Default content container with defined border and subtle shadow.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\">Card Title</div><div class=\"ds-card-body\">Content goes here.</div></div>",
+      "css": ".ds-card { background: #fff; border: 1px solid #e7e5e4; border-radius: 16px; box-shadow: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04); transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; } .ds-card:hover { border-color: #d6d3d1; box-shadow: 0 4px 6px rgba(15,23,42,0.05), 0 2px 4px rgba(15,23,42,0.04); } .ds-card-header { padding: 16px 20px; border-bottom: 1px solid #f5f5f4; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 14px; color: #292524; } .ds-card-body { padding: 20px; font-family: Inter, system-ui, sans-serif; font-size: 14px; color: #57534e; line-height: 1.6; }"
+    },
+    {
+      "name": "Badge",
+      "kind": "chip",
+      "refersTo": "badge-published",
+      "description": "Pill-shaped status badge. Orange-50 background, Signal Orange text. Variants use emerald (published) / stone (draft) / rose (error) tint, always the same shape.",
+      "html": "<span class=\"ds-badge\">Published</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; font-family: Inter, system-ui, sans-serif; font-size: 12px; font-weight: 600; background: #fff7ed; color: #f97316; white-space: nowrap; } .ds-badge-published { background: #ecfdf5; color: #047857; } .ds-badge-draft { background: #f5f5f4; color: #57534e; } .ds-badge-error { background: #fef2f2; color: #dc2626; }"
+    },
+    {
+      "name": "Modal Dialog",
+      "kind": "custom",
+      "refersTo": "confirm-dialog",
+      "description": "Confirmation dialog with semantic backdrop, accessible role attributes, and tone-appropriate icon.",
+      "html": "<div class=\"ds-modal-backdrop\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"modal-title\" aria-describedby=\"modal-desc\"><div class=\"ds-modal-panel\"><div class=\"ds-modal-icon ds-modal-icon-positive\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M13.3 4.3L6 11.6 2.7 8.3\" stroke=\"#059669\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></div><div class=\"ds-modal-content\"><h2 id=\"modal-title\">Publish this article?</h2><p id=\"modal-desc\" class=\"ds-modal-desc\">This will make the article visible to the public.</p></div><button class=\"ds-modal-close\" aria-label=\"Close\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M12 4L4 12M4 4l8 8\" stroke=\"#a8a29e\" stroke-width=\"1.5\" stroke-linecap=\"round\"/></svg></button><div class=\"ds-modal-actions\"><button class=\"ds-btn-ghost\">Cancel</button><button class=\"ds-btn-primary ds-modal-confirm\">Publish</button></div></div></div>",
+      "css": ".ds-modal-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(28,25,23,0.5); padding: 16px; } .ds-modal-panel { background: #fff; border: 1px solid #e7e5e4; border-radius: 16px; box-shadow: 0 20px 25px rgba(15,23,42,0.08), 0 8px 10px rgba(15,23,42,0.04); padding: 24px; max-width: 448px; width: 100%; box-sizing: border-box; } .ds-modal-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; } .ds-modal-icon-positive { background: #ecfdf5; } .ds-modal-icon-negative { background: #fef2f2; } .ds-modal-content { flex: 1; } .ds-modal-content h2 { font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif; font-size: 16px; font-weight: 600; color: #292524; margin: 0 0 6px 0; } .ds-modal-desc { font-family: Inter, system-ui, sans-serif; font-size: 14px; color: #57534e; line-height: 1.5; margin: 0; } .ds-modal-close { background: none; border: none; cursor: pointer; color: #a8a29e; padding: 4px; margin-left: auto; } .ds-modal-close:hover { color: #57534e; } .ds-modal-actions { display: flex; gap: 8px; margin-top: 20px; } .ds-modal-confirm { flex: 1; }"
+    },
+    {
+      "name": "Table",
+      "kind": "custom",
+      "refersTo": "table-default",
+      "description": "Data table with bordered container, uppercase stone-500 header, horizontal scroll. No striping.",
+      "html": "<div class=\"ds-table-wrapper\"><table class=\"ds-table\"><thead><tr><th>Name</th><th>Status</th><th>Date</th></tr></thead><tbody><tr><td>Project Alpha</td><td><span class=\"ds-badge ds-badge-published\">Completed</span></td><td>Jun 3, 2026</td></tr><tr><td>Project Beta</td><td><span class=\"ds-badge ds-badge-draft\">Pending</span></td><td>Jun 1, 2026</td></tr><tr><td>Project Gamma</td><td><span class=\"ds-badge ds-badge-error\">Cancelled</span></td><td>May 28, 2026</td></tr></tbody></table></div>",
+      "css": ".ds-table-wrapper { overflow-x: auto; border-radius: 16px; border: 1px solid #e7e5e4; box-shadow: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04); } .ds-table { width: 100%; border-collapse: collapse; background: #fff; font-family: Inter, system-ui, sans-serif; } .ds-table thead { background: rgba(245,245,244,0.5); } .ds-table th { padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #78716c; white-space: nowrap; } .ds-table td { padding: 12px 20px; font-size: 14px; color: #57534e; } .ds-table tbody tr { border-top: 1px solid #f5f5f4; transition: background 0.15s ease; } .ds-table tbody tr:hover { background: rgba(245,245,244,0.4); }"
+    },
+    {
+      "name": "Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "nav-sidebar-item",
+      "description": "Dashboard sidebar navigation item. Inactive is stone-500 text on stone-bg; active is Signal Orange 600 background with white text and shadow.",
+      "html": "<div class=\"ds-sidebar-item\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 18 18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><rect x=\"2\" y=\"2\" width=\"14\" height=\"14\" rx=\"2\"/><line x1=\"2\" y1=\"6\" x2=\"16\" y2=\"6\"/></svg><span>Dashboard</span></div>",
+      "css": ".ds-sidebar-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 14px; color: #78716c; cursor: pointer; transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); } .ds-sidebar-item:hover { background: rgba(231,229,228,0.4); color: #44403c; } .ds-sidebar-item-active { background: #ea580c; color: #fff; box-shadow: 0 4px 14px rgba(249,115,22,0.22); } .ds-sidebar-item-active:hover { background: #ea580c; color: #fff; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Solid Desk",
+    "overview": "Sanad's design system is a workspace built from solid surfaces with defined edges — nothing floats, nothing glows, nothing blurs. The analogy is a well-organized workbench: heavy enough to trust, clean enough to think. On the public-facing site, the desk carries brand energy through the orange accent and the typographic scale. On the dashboard, it disappears into the task. The system explicitly rejects SaaS-cliché ornament: gradient mesh backgrounds, glassmorphism, colored side-stripes, glow shadows, and uppercase tracked eyebrows over every section.",
+    "keyCharacteristics": [
+      "Solid, not floating. Every surface has a defined edge (1px border) and rests on the surface below it with a small, precise shadow.",
+      "One voice. The orange (#f97316) accent is the only color that carries brand energy. It appears on ≤10% of any given surface.",
+      "RTL is structural, not cosmetic. The entire surface mirrors — spacing, motion, hierarchy — for Arabic.",
+      "Depth is communicated through solid means: borders, background shifts, and subtle layered shadows.",
+      "The tool should disappear. On the dashboard, editors should not notice the interface."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Signal orange is the only brand color. Amber is its secondary gradient partner — not a separate accent. Cyan, emerald, and rose communicate state, not brand.", "section": "colors" },
+      { "name": "The Restrained Palette Rule", "body": "Color is state, not decoration. If an element is not interactive, not selected, not in error, and not a primary CTA, it should be stone-neutral.", "section": "colors" },
+      { "name": "The Flat Hierarchy Rule", "body": "Dashboard surfaces do not use fluid clamp sizes. Font sizes are fixed at the mobile value on screens <1024px and at the desktop value on screens >=1024px.", "section": "typography" },
+      { "name": "The No-Orphan Rule", "body": "Long prose uses text-wrap: pretty to reduce widows. Headings use text-wrap: balance.", "section": "typography" },
+      { "name": "The Flat-at-Rest Rule", "body": "Shadows are not decorative. At rest, cards carry only the minimal SM shadow. Elevation increases only as a response to interaction or structural hierarchy.", "section": "elevation" },
+      { "name": "The No-Glass Rule", "body": "No backdrop-blur, no transparency, no gradient overlay as surface treatment. Blur is reserved for modal backdrops only.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Signal Orange for primary actions, current nav selection, and focused inputs only. ≤10% of any given surface.",
+      "Do give every surface a defined 1px border.",
+      "Do use stone-900 for title text, stone-700 for body text, stone-500 for secondary text.",
+      "Do use text-wrap: balance on headings and text-wrap: pretty on long prose paragraphs.",
+      "Do pass prefers-reduced-motion: reduce into every Framer Motion component.",
+      "Do respect the typographic scale (ratio 1.25) and the fixed breakpoints.",
+      "Do use the stone neutral ramp for all non-state surfaces.",
+      "Do use semantic HTML with ARIA on modals: role='dialog', aria-modal, aria-labelledby, aria-describedby.",
+      "Do match the RTL surface exactly — spacing, motion, alignment — not just mirror layout."
+    ],
+    "donts": [
+      "Don't use gradient text (background-clip: text).",
+      "Don't use glassmorphism (backdrop-blur + transparency) as a default surface treatment.",
+      "Don't use mesh gradient backgrounds, repeating gradient stripes, or colored page overlays.",
+      "Don't use side-stripe borders (border-left/border-right > 1px) on cards, list items, or callouts.",
+      "Don't place uppercase tracked eyebrows above every section.",
+      "Don't combine 1px solid border with a wide blur shadow (blur >=16px) on the same element.",
+      "Don't over-round. Cards top out at 16px; full pill is for badges only.",
+      "Don't place placeholder/fake data in production components. Show an em-dash or an empty state.",
+      "Don't animate CSS layout properties. Use transform and opacity only.",
+      "Don't bounce or elastic ease on motion.",
+      "Don't use all-caps for body text, sentences, or multi-word labels.",
+      "Don't use display font weights (800) in dashboard context.",
+      "Don't hard-code shadow or spacing values.",
+      "Don't show a modal when an inline or progressive disclosure pattern would serve the user's flow better."
+    ]
+  }
+}

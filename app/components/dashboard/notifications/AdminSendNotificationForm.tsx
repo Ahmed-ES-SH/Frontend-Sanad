@@ -68,6 +68,11 @@ export function AdminSendNotificationForm() {
     setIsModalOpen(true);
   }, [selectedUsers.length]);
 
+  const handleSelectAndContinue = useCallback(() => {
+    setValidationError(null);
+    setIsModalOpen(true);
+  }, []);
+
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
   }, []);
@@ -99,6 +104,7 @@ export function AdminSendNotificationForm() {
         onSelectionChange={handleSelectionChange}
         onUsersFetched={handleUsersFetched}
         onContinue={handleContinue}
+        onSelectAndContinue={handleSelectAndContinue}
         validationError={validationError}
       />
 

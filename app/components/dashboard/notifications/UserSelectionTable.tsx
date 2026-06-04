@@ -16,7 +16,7 @@ interface UserSelectionTableProps {
   selectedUsers: number[];
   onSelectionChange: (selectedIds: number[]) => void;
   onUsersFetched?: (users: SelectedUserInfo[]) => void;
-  onSelectAndContinue?: () => void;
+  onSelectAndContinue?: (userId: number) => void;
   mode?: "single" | "multiple";
   maxSelections?: number;
 }
@@ -87,7 +87,7 @@ export function UserSelectionTable({
     (userId: number) => {
       if (mode === "single") {
         onSelectionChange([userId]);
-        onSelectAndContinue?.();
+        onSelectAndContinue?.(userId);
       } else {
         const isSelected = selectedUsers.includes(userId);
         let newSelection: number[];

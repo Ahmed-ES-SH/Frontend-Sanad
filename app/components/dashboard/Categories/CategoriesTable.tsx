@@ -5,6 +5,7 @@ import { PaginationMeta } from "@/app/types/global";
 import { motion } from "framer-motion";
 import { FiFolder, FiEdit2, FiTrash2, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import CategoriesPaginaiton from "./CategoriesPaginaiton";
+import { getIconComponent } from "@/app/helpers/getIconComponent";
 
 interface CategoriesTableProps {
   data: Category[];
@@ -80,7 +81,10 @@ export function CategoriesTable({
                     <div className="flex items-center gap-3">
                       {item.icon && (
                         <div className="w-10 h-10 rounded bg-surface-100 flex items-center justify-center text-surface-600">
-                          <i className={`icon-${item.icon} text-lg`} />
+                          {(() => {
+                            const Icon = getIconComponent(item.icon);
+                            return <Icon className="text-lg" />;
+                          })()}
                         </div>
                       )}
                       <div>

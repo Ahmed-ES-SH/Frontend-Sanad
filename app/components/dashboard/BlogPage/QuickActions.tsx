@@ -14,7 +14,7 @@ export function QuickActions() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <LocaleLink href={`/dashboard/blog/add`} className="block">
+      <LocaleLink href={`/dashboard/addarticle`} className="block">
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

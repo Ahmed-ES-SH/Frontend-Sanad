@@ -185,6 +185,62 @@ export async function createArticle(formData: ArticleFormData): Promise<{
   };
 }
 
+export async function deleteArticleById(id: string): Promise<{
+  success: boolean;
+  message: string;
+}> {
+  const res = await globalRequest<never, DeleteResponse>({
+    endpoint: BLOG_ENDPOINTS.ADMIN_DELETE(id),
+    method: "DELETE",
+    defaultErrorMessage: "Failed to delete article",
+  });
+
+  if (!res.success) {
+    return res;
+  }
+
+  revalidateTag("blog", {});
+
+  return {
+    success: true,
+    message: "Article deleted successfully",
+  };
+}
+
+export async function publishArticle(
+  formData: ArticleFormData,
+  isPublished: boolean,
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: Article;
+}> {
+  const created = await createArticle(formData);
+
+  if (!created.success || !created.data) {
+    return {
+      success: false,
+      message: created.message,
+    };
+  }
+
+  if (!isPublished) {
+    return created;
+  }
+
+  const toggled = await togglePublishStatus(created.data.id);
+
+  if (!toggled.success) {
+    await deleteArticleById(created.data.id).catch(() => undefined);
+    return {
+      success: false,
+      message: toggled.message || "Failed to publish article",
+    };
+  }
+
+  return created;
+}
+
 /* =========================================================
    ADMIN: UPDATE
 ========================================================= */
